@@ -1,0 +1,316 @@
+<div class="min-h-screen bg-base-100 text-base-content">
+
+  <!--NAVBAR -->
+  <div class="drawer">
+    <input id="give-drawer" type="checkbox" class="drawer-toggle" />
+    <div class="drawer-content flex flex-col">
+
+      <header class="navbar bg-base-100/80 backdrop-blur-md border-b border-base-content/5 px-6 sticky top-0 z-50">
+        <div class="navbar-start">
+          <label for="give-drawer" class="btn btn-ghost btn-circle lg:hidden">
+            <span class="material-symbols-outlined">menu</span>
+          </label>
+          <a routerLink="/" class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+              <span class="material-symbols-outlined text-primary-content text-base" style="font-variation-settings:'FILL' 1">auto_awesome</span>
+            </div>
+            <span class="display text-xl tracking-widest text-primary hidden sm:block">I AM BOLD</span>
+          </a>
+        </div>
+        <div class="navbar-center hidden lg:flex">
+          <ul class="menu menu-horizontal gap-1 text-sm font-semibold">
+            <li><a routerLink="/" class="rounded-full">Home</a></li>
+            <li><a routerLink="/join" class="rounded-full">Join</a></li>
+            <li><a routerLink="/about" class="rounded-full">About</a></li>
+            <li><a routerLink="/worship" class="rounded-full">Worship</a></li>
+            <li><a routerLink="/wear" class="rounded-full">Wear &amp; Share</a></li>
+            <li><a routerLink="/events" class="rounded-full">Events</a></li>
+            <li><a routerLink="/give" class="rounded-full text-secondary font-bold">Give</a></li>
+          </ul>
+        </div>
+        <div class="navbar-end gap-2">
+          <a routerLink="/join" class="btn btn-primary btn-sm rounded-full font-bold shadow shadow-primary/30">Join Now</a>
+        </div>
+      </header>
+
+      <!--HERO -->
+      <section class="relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-base-100 via-base-100 to-primary/20"></div>
+        <div class="absolute right-0 top-0 w-[600px] h-[600px] rounded-full bg-primary/10 blur-[120px] pointer-events-none"></div>
+        <div class="absolute left-0 bottom-0 w-[400px] h-[400px] rounded-full bg-secondary/8 blur-[100px] pointer-events-none"></div>
+
+        <div class="relative max-w-[1200px] mx-auto px-6 md:px-10 py-16 w-full">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+
+            <!-- Left: copy -->
+            <div class="flex flex-col gap-6">
+              <div class="badge badge-secondary rounded-full font-bold uppercase tracking-wider px-4 py-2 w-fit gap-2">
+                <span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1">volunteer_activism</span>
+                Give
+              </div>
+              <h1 class="display text-6xl md:text-7xl tracking-widest leading-none">
+                Fuel the<br/><span class="text-primary">Kingdom</span><br/>
+                <span class="text-secondary">Work</span>
+              </h1>
+              <p class="text-base-content/60 leading-relaxed max-w-md text-lg">
+                Every gift you give goes directly to outreaches, worship events, and spreading the gospel boldly across Uganda and beyond.
+              </p>
+
+              <!-- Impact cards -->
+              <div class="flex flex-col gap-3 mt-2">
+                <div class="flex items-center gap-3 bg-base-200 rounded-2xl px-4 py-3">
+                  <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-primary text-lg" style="font-variation-settings:'FILL' 1">campaign</span>
+                  </div>
+                  <div>
+                    <p class="font-black text-sm">UGX 10,000 / $3</p>
+                    <p class="text-xs opacity-50">Prints gospel tracts for an outreach</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3 bg-base-200 rounded-2xl px-4 py-3">
+                  <div class="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-secondary text-lg" style="font-variation-settings:'FILL' 1">music_note</span>
+                  </div>
+                  <div>
+                    <p class="font-black text-sm">UGX 50,000 / $15</p>
+                    <p class="text-xs opacity-50">Sponsors a worship night session</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3 bg-base-200 rounded-2xl px-4 py-3">
+                  <div class="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-accent text-lg" style="font-variation-settings:'FILL' 1">groups</span>
+                  </div>
+                  <div>
+                    <p class="font-black text-sm">UGX 250,000 / $65</p>
+                    <p class="text-xs opacity-50">Funds a full community outreach event</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: give CTA card -->
+            <div class="w-full">
+              <div class="card bg-base-200 border border-primary/10 shadow-2xl overflow-hidden">
+
+                <!-- Top glow bar -->
+                <div class="h-1 w-full bg-gradient-to-r from-primary via-secondary to-accent"></div>
+
+                <div class="card-body p-8 md:p-10 items-center text-center gap-6">
+
+                  <!-- Icon -->
+                  <div class="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-primary text-5xl" style="font-variation-settings:'FILL' 1">volunteer_activism</span>
+                  </div>
+
+                  <div class="flex flex-col gap-2">
+                    <h2 class="display text-4xl tracking-widest">Give Today</h2>
+                    <p class="text-base-content/50 leading-relaxed text-sm max-w-xs mx-auto">
+                      Click below to be taken to our secure Flutterwave donation page where you can give via Mobile Money, card, or bank transfer.
+                    </p>
+                  </div>
+
+                  <!-- Payment methods -->
+                  <div class="flex flex-wrap gap-2 justify-center">
+                    <div class="badge badge-ghost rounded-full text-xs gap-1 py-3 px-3">
+                      <span class="material-symbols-outlined text-xs">smartphone</span>
+                      MTN Mobile Money
+                    </div>
+                    <div class="badge badge-ghost rounded-full text-xs gap-1 py-3 px-3">
+                      <span class="material-symbols-outlined text-xs">smartphone</span>
+                      Airtel Money
+                    </div>
+                    <div class="badge badge-ghost rounded-full text-xs gap-1 py-3 px-3">
+                      <span class="material-symbols-outlined text-xs">credit_card</span>
+                      Card
+                    </div>
+                    <div class="badge badge-ghost rounded-full text-xs gap-1 py-3 px-3">
+                      <span class="material-symbols-outlined text-xs">account_balance</span>
+                      Bank Transfer
+                    </div>
+                  </div>
+
+                  <!-- CTA button -->
+                  @if (donationUrl()) {
+                    <button class="btn btn-primary rounded-full font-bold w-full shadow-lg shadow-primary/20 px-10"
+                            (click)="openDonation()">
+                      <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">volunteer_activism</span>
+                      Give Now
+                    </button>
+                  } @else {
+                    <button class="btn btn-disabled rounded-full font-bold w-full px-10" disabled>
+                      <span class="material-symbols-outlined">hourglass_top</span>
+                      Coming Soon
+                    </button>
+                  }
+
+                  <p class="text-xs opacity-20 flex items-center gap-1">
+                    <span class="material-symbols-outlined text-xs">lock</span>
+                    Secured by Flutterwave
+                  </p>
+
+                </div>
+              </div>
+
+              <!-- Scripture -->
+              <p class="text-center text-xs opacity-30 italic mt-4 px-4">
+                "Each of you should give what you have decided in your heart to give, not reluctantly or under compulsion,
+                for God loves a cheerful giver." — 2 Corinthians 9:7
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!--SCRIPTURE BANNER -->
+      <section class="bg-primary py-16">
+        <div class="max-w-[1200px] mx-auto px-6 md:px-10 text-center flex flex-col items-center gap-4">
+          <span class="material-symbols-outlined text-primary-content/30 text-4xl" style="font-variation-settings:'FILL' 1">format_quote</span>
+          <p class="display text-3xl md:text-4xl tracking-widest text-primary-content leading-snug max-w-3xl">
+            Give, and it will be given to you. A good measure, pressed down, shaken together and running over.
+          </p>
+          <p class="text-primary-content/50 font-bold uppercase tracking-widest text-sm">Luke 6:38</p>
+        </div>
+      </section>
+
+      <!--HOW IT WORKS-->
+      <section class="bg-base-200 py-16">
+        <div class="max-w-[1200px] mx-auto px-6 md:px-10 flex flex-col gap-10">
+          <div class="text-center">
+            <h2 class="display text-4xl tracking-widest">How Giving Works</h2>
+            <p class="opacity-40 text-sm mt-2">Simple, safe, and Spirit-led</p>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="card bg-base-100 border border-base-content/5">
+              <div class="card-body p-6 items-center text-center gap-3">
+                <div class="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
+                  <span class="material-symbols-outlined text-primary text-2xl" style="font-variation-settings:'FILL' 1">touch_app</span>
+                </div>
+                <p class="font-black">1. Click Give Now</p>
+                <p class="text-sm opacity-50">Hit the Give Now button and you'll be taken to our secure Flutterwave donation page.</p>
+              </div>
+            </div>
+            <div class="card bg-base-100 border border-base-content/5">
+              <div class="card-body p-6 items-center text-center gap-3">
+                <div class="w-14 h-14 rounded-full bg-secondary/10 flex items-center justify-center">
+                  <span class="material-symbols-outlined text-secondary text-2xl" style="font-variation-settings:'FILL' 1">lock</span>
+                </div>
+                <p class="font-black">2. Choose & Pay</p>
+                <p class="text-sm opacity-50">Enter your amount and pay via Mobile Money (MTN, Airtel), card, or bank transfer — all secured by Flutterwave.</p>
+              </div>
+            </div>
+            <div class="card bg-base-100 border border-base-content/5">
+              <div class="card-body p-6 items-center text-center gap-3">
+                <div class="w-14 h-14 rounded-full bg-accent/10 flex items-center justify-center">
+                  <span class="material-symbols-outlined text-accent text-2xl" style="font-variation-settings:'FILL' 1">bolt</span>
+                </div>
+                <p class="font-black">3. Impact the Kingdom</p>
+                <p class="text-sm opacity-50">100% of your gift goes directly to outreaches, worship events, and gospel work across the region.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Second CTA -->
+          @if (donationUrl()) {
+            <div class="flex justify-center">
+              <button class="btn btn-primary rounded-full font-bold px-10 shadow-lg shadow-primary/20"
+                      (click)="openDonation()">
+                <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">volunteer_activism</span>
+                Give Now
+              </button>
+            </div>
+          }
+        </div>
+      </section>
+
+      <!--CTA BANNER-->
+      <section class="relative py-20 overflow-hidden"
+               style="background: linear-gradient(135deg, #6A0DAD, #3d0670, oklch(20% 0.042 265.755))">
+        <div class="absolute top-0 right-0 w-96 h-96 rounded-full bg-secondary/10 blur-3xl pointer-events-none"></div>
+        <div class="absolute bottom-0 left-1/4 w-64 h-64 rounded-full bg-white/5 blur-3xl pointer-events-none"></div>
+        <div class="relative max-w-[1200px] mx-auto px-6 md:px-10 text-center flex flex-col items-center gap-6">
+          <h2 class="display text-5xl md:text-6xl tracking-widest text-white leading-none">
+            Beyond the Gift.<br/><span class="text-secondary">Join Us.</span>
+          </h2>
+          <p class="text-white/60 max-w-md leading-relaxed">
+            Giving is one way to be part of this. Come join the movement in person.
+          </p>
+          <div class="flex flex-wrap gap-3 justify-center">
+            <a routerLink="/join" class="btn btn-secondary rounded-full font-bold px-10 shadow-lg">
+              <span class="material-symbols-outlined">group_add</span> Join the Movement
+            </a>
+            <a routerLink="/events" class="btn btn-ghost rounded-full font-bold px-8 text-white border border-white/20 hover:bg-white/10">
+              <span class="material-symbols-outlined">calendar_month</span> See Events
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- FOOTER -->
+      <footer class="bg-primary text-primary-content pt-16 pb-8">
+        <div class="max-w-[1200px] mx-auto px-6 md:px-10 flex flex-col gap-12">
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-10">
+            <div class="md:col-span-1 flex flex-col gap-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
+                  <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">auto_awesome</span>
+                </div>
+                <span class="display text-2xl tracking-widest">I AM BOLD</span>
+              </div>
+              <p class="text-sm opacity-60 leading-relaxed">A movement for the bold, the brave, and the unashamed.</p>
+            </div>
+            <div class="flex flex-col gap-3">
+              <p class="font-black text-sm uppercase tracking-wider opacity-40">Movement</p>
+              <a routerLink="/about" class="text-sm opacity-60 hover:opacity-100 transition-opacity">About</a>
+              <a routerLink="/join" class="text-sm opacity-60 hover:opacity-100 transition-opacity">Join Us</a>
+              <a routerLink="/give" class="text-sm opacity-60 hover:opacity-100 transition-opacity">Give</a>
+            </div>
+            <div class="flex flex-col gap-3">
+              <p class="font-black text-sm uppercase tracking-wider opacity-40">Content</p>
+              <a routerLink="/worship" class="text-sm opacity-60 hover:opacity-100 transition-opacity">Worship</a>
+              <a routerLink="/events" class="text-sm opacity-60 hover:opacity-100 transition-opacity">Events</a>
+              <a routerLink="/wear" class="text-sm opacity-60 hover:opacity-100 transition-opacity">Wear &amp; Share</a>
+            </div>
+            <div class="flex flex-col gap-3">
+              <p class="font-black text-sm uppercase tracking-wider opacity-40">Stay Bold</p>
+              <p class="text-sm opacity-60">Get updates on new drops and events.</p>
+              <a routerLink="/join" class="btn btn-sm rounded-full bg-white/10 hover:bg-white/20 border-0 font-bold text-primary-content">
+                Join the Movement
+              </a>
+            </div>
+          </div>
+          <div class="border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <p class="text-xs opacity-30">© 2026 I Am Bold For Jesus. All rights reserved.</p>
+            <p class="text-xs opacity-30 italic">"I am not ashamed of the gospel" — Romans 1:16</p>
+          </div>
+        </div>
+      </footer>
+
+    </div>
+
+    <!-- Drawer sidebar -->
+    <div class="drawer-side z-[100]">
+      <label for="give-drawer" class="drawer-overlay"></label>
+      <ul class="menu bg-base-200 min-h-full w-72 p-6 gap-1 text-base-content">
+        <li class="mb-4">
+          <a routerLink="/" class="flex items-center gap-3 p-0 hover:bg-transparent">
+            <div class="w-9 h-9 rounded-full bg-primary flex items-center justify-center">
+              <span class="material-symbols-outlined text-primary-content text-base" style="font-variation-settings:'FILL' 1">auto_awesome</span>
+            </div>
+            <span class="display text-xl tracking-widest text-primary">I AM BOLD</span>
+          </a>
+        </li>
+        <li><a routerLink="/" class="rounded-full font-semibold">Home</a></li>
+        <li><a routerLink="/about" class="rounded-full font-semibold">About</a></li>
+        <li><a routerLink="/worship" class="rounded-full font-semibold">Worship</a></li>
+        <li><a routerLink="/wear" class="rounded-full font-semibold">Wear &amp; Share</a></li>
+        <li><a routerLink="/events" class="rounded-full font-semibold">Events</a></li>
+        <li><a routerLink="/give" class="rounded-full font-semibold text-secondary">Give</a></li>
+        <li class="mt-4">
+          <a routerLink="/join" class="btn btn-primary rounded-full font-bold">Join Now</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+</div>
