@@ -1,0 +1,511 @@
+<div class="min-h-screen bg-base-100 text-base-content">
+
+  <!-- EVENT DETAIL MODAL-->
+  @if (selectedEvent()) {
+    <div class="fixed inset-0 z-[200] flex items-center justify-center p-4"
+         (click)="closeEvent()">
+      <div class="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
+      <div class="relative z-10 w-full max-w-lg flex flex-col gap-0"
+           (click)="$event.stopPropagation()">
+
+        <div class="card bg-base-200 overflow-hidden shadow-2xl border border-primary/10">
+
+          <!-- Color header bar based on type -->
+          <div class="h-2 w-full"
+               [class.bg-primary]="selectedEvent()!.type === 'outreach'"
+               [class.bg-secondary]="selectedEvent()!.type === 'worship'"
+               [class.bg-accent]="selectedEvent()!.type === 'prayer'"
+               [class.bg-neutral]="selectedEvent()!.type === 'other'"></div>
+
+          <div class="card-body p-6 md:p-8 gap-5">
+
+            <!-- Header -->
+            <div class="flex items-start justify-between gap-4">
+              <div class="flex items-center gap-4">
+                <!-- Big icon -->
+                <div class="w-16 h-16 rounded-2xl flex items-center justify-center shrink-0"
+                     [class]="getConfig(selectedEvent()!.type).bg">
+                  <span class="material-symbols-outlined text-3xl"
+                        [class]="getConfig(selectedEvent()!.type).text"
+                        style="font-variation-settings:'FILL' 1">
+                    {{ getConfig(selectedEvent()!.type).icon }}
+                  </span>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2 mb-1">
+                    <div class="badge badge-sm rounded-full font-bold capitalize"
+                         [class]="getConfig(selectedEvent()!.type).badge">
+                      {{ selectedEvent()!.type }}
+                    </div>
+                    @if (isToday(selectedEvent()!.date)) {
+                      <div class="badge badge-sm badge-success rounded-full font-bold">Today!</div>
+                    } @else if (isPast(selectedEvent()!.date)) {
+                      <div class="badge badge-sm badge-ghost rounded-full font-bold opacity-50">Past</div>
+                    }
+                  </div>
+                  <h2 class="display text-3xl tracking-widest leading-tight">{{ selectedEvent()!.title }}</h2>
+                </div>
+              </div>
+              <button class="btn btn-ghost btn-sm btn-circle shrink-0" (click)="closeEvent()">
+                <span class="material-symbols-outlined">close</span>
+              </button>
+            </div>
+
+            <!-- Details -->
+            <div class="flex flex-col gap-3 bg-base-300 rounded-2xl p-4">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-primary text-sm">calendar_today</span>
+                </div>
+                <div>
+                  <p class="text-xs opacity-40 uppercase tracking-wider font-bold">Date</p>
+                  <p class="font-bold text-sm">
+                    {{ getDay(selectedEvent()!.date) }} {{ getMonth(selectedEvent()!.date) }} {{ getYear(selectedEvent()!.date) }}
+                    @if (isToday(selectedEvent()!.date)) { <span class="text-success ml-1">— Today</span> }
+                  </p>
+                </div>
+              </div>
+              @if (selectedEvent()!.time) {
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-primary text-sm">schedule</span>
+                  </div>
+                  <div>
+                    <p class="text-xs opacity-40 uppercase tracking-wider font-bold">Time</p>
+                    <p class="font-bold text-sm">{{ formatTime(selectedEvent()!.time) }}</p>
+                  </div>
+                </div>
+              }
+              @if (selectedEvent()!.location) {
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-primary text-sm">location_on</span>
+                  </div>
+                  <div>
+                    <p class="text-xs opacity-40 uppercase tracking-wider font-bold">Location</p>
+                    <p class="font-bold text-sm">{{ selectedEvent()!.location }}</p>
+                  </div>
+                </div>
+              }
+            </div>
+
+            @if (selectedEvent()!.description) {
+              <p class="text-sm opacity-60 leading-relaxed">{{ selectedEvent()!.description }}</p>
+            }
+
+            <!-- Actions -->
+            <div class="flex gap-3">
+              @if (!isPast(selectedEvent()!.date) && eventsFormUrl()) {
+                <button class="btn btn-primary rounded-full font-bold flex-1 shadow-lg shadow-primary/20"
+                        (click)="rsvpEvent(selectedEvent()!)">
+                  <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">how_to_reg</span>
+                  RSVP / Join Event
+                </button>
+              } @else if (!isPast(selectedEvent()!.date)) {
+                <button class="btn btn-disabled rounded-full font-bold flex-1" disabled>
+                  Registration Coming Soon
+                </button>
+              } @else {
+                <button class="btn btn-ghost rounded-full font-bold flex-1 border border-base-content/10" disabled>
+                  <span class="material-symbols-outlined text-sm">history</span>
+                  Event Has Passed
+                </button>
+              }
+              <button class="btn btn-ghost btn-square rounded-2xl border border-base-content/10"
+                      (click)="closeEvent()">
+                <span class="material-symbols-outlined">close</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- NAVBAR -->
+  <div class="drawer">
+    <input id="events-drawer" type="checkbox" class="drawer-toggle" />
+    <div class="drawer-content flex flex-col">
+
+      <header class="navbar bg-base-100/80 backdrop-blur-md border-b border-base-content/5 px-6 sticky top-0 z-50">
+        <div class="navbar-start">
+          <label for="events-drawer" class="btn btn-ghost btn-circle lg:hidden">
+            <span class="material-symbols-outlined">menu</span>
+          </label>
+          <a routerLink="/" class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+              <span class="material-symbols-outlined text-primary-content text-base" style="font-variation-settings:'FILL' 1">auto_awesome</span>
+            </div>
+            <span class="display text-xl tracking-widest text-primary hidden sm:block">I AM BOLD</span>
+          </a>
+        </div>
+        <div class="navbar-center hidden lg:flex">
+          <ul class="menu menu-horizontal gap-1 text-sm font-semibold">
+            <li><a routerLink="/" class="rounded-full">Home</a></li>
+            <li><a routerLink="/join" class="rounded-full">Join</a></li>
+            <li><a routerLink="/about" class="rounded-full">About</a></li>
+            <li><a routerLink="/worship" class="rounded-full">Worship</a></li>
+            <li><a routerLink="/wear" class="rounded-full">Wear &amp; Share</a></li>
+            <li><a routerLink="/events" class="rounded-full text-secondary font-bold">Events</a></li>
+            <li><a routerLink="/give" class="rounded-full">Give</a></li>
+          </ul>
+        </div>
+        <div class="navbar-end gap-2">
+          <a routerLink="/join" class="btn btn-primary btn-sm rounded-full font-bold shadow shadow-primary/30">Join Now</a>
+        </div>
+      </header>
+
+      <!-- HERO -->
+      <section class="relative min-h-[440px] flex items-center overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-r from-base-100 via-base-100/95 to-primary/20"></div>
+        <div class="absolute right-0 top-0 w-[500px] h-[500px] rounded-full bg-primary/10 blur-[100px] pointer-events-none"></div>
+        <div class="absolute right-32 bottom-0 w-[300px] h-[300px] rounded-full bg-secondary/8 blur-[80px] pointer-events-none"></div>
+
+        <div class="relative max-w-[1200px] mx-auto px-6 md:px-10 py-16 w-full">
+          <div class="flex flex-col lg:flex-row items-start lg:items-end justify-between gap-8">
+
+            <!-- Left: heading -->
+            <div class="flex flex-col gap-5 max-w-xl">
+              <div class="badge badge-secondary rounded-full font-bold uppercase tracking-wider px-4 py-2 w-fit gap-2">
+                <span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1">calendar_month</span>
+                Events
+              </div>
+              <h1 class="display text-6xl md:text-7xl tracking-widest leading-none">
+                What's<br/><span class="text-primary">Happening</span><br/>
+                <span class="text-secondary">Near You</span>
+              </h1>
+              <p class="text-base-content/60 leading-relaxed max-w-md">
+                Outreaches, worship nights, prayer sessions — find your next Bold moment and show up for the Kingdom.
+              </p>
+            </div>
+
+            <!-- Right: quick stats -->
+            <div class="flex gap-4 shrink-0">
+              <div class="card bg-base-200 border border-primary/10 px-6 py-4 text-center min-w-[100px]">
+                <p class="display text-4xl tracking-widest text-primary">{{ upcomingCount() }}</p>
+                <p class="text-xs opacity-40 uppercase tracking-wider font-bold mt-1">Upcoming</p>
+              </div>
+              <div class="card bg-base-200 border border-base-content/5 px-6 py-4 text-center min-w-[100px]">
+                <p class="display text-4xl tracking-widest opacity-50">{{ pastCount() }}</p>
+                <p class="text-xs opacity-40 uppercase tracking-wider font-bold mt-1">Past</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SEARCH + FILTER BAR -->
+      <div class="bg-base-200 border-b border-base-content/5 sticky top-[65px] z-40">
+        <div class="max-w-[1200px] mx-auto px-6 md:px-10 py-4 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+
+          <!-- Date search -->
+          <div class="flex items-center gap-2 flex-1 max-w-xs">
+            <label class="input rounded-full w-full bg-base-100">
+              <span class="material-symbols-outlined opacity-40 text-sm">calendar_today</span>
+              <input type="date" class="text-sm"
+                     [value]="searchDate()"
+                     (change)="searchDate.set($any($event.target).value)" />
+            </label>
+            @if (searchDate()) {
+              <button class="btn btn-ghost btn-sm btn-circle" (click)="clearSearch()"
+                      title="Clear date filter">
+                <span class="material-symbols-outlined text-sm">close</span>
+              </button>
+            }
+          </div>
+
+          <!-- Filter tabs -->
+          @if (!searchDate()) {
+            <div class="tabs tabs-box bg-base-100 rounded-full p-1 gap-1">
+              <button class="tab rounded-full font-bold text-sm gap-1.5 transition-all"
+                      [class.tab-active]="activeFilter() === 'upcoming'"
+                      (click)="activeFilter.set('upcoming')">
+                <span class="material-symbols-outlined text-sm">upcoming</span>
+                Upcoming
+                @if (upcomingCount() > 0) {
+                  <span class="badge badge-xs rounded-full"
+                        [class.badge-primary]="activeFilter() === 'upcoming'"
+                        [class.badge-ghost]="activeFilter() !== 'upcoming'">
+                    {{ upcomingCount() }}
+                  </span>
+                }
+              </button>
+              <button class="tab rounded-full font-bold text-sm gap-1.5 transition-all"
+                      [class.tab-active]="activeFilter() === 'past'"
+                      (click)="activeFilter.set('past')">
+                <span class="material-symbols-outlined text-sm">history</span>
+                Past
+              </button>
+              <button class="tab rounded-full font-bold text-sm gap-1.5 transition-all"
+                      [class.tab-active]="activeFilter() === 'all'"
+                      (click)="activeFilter.set('all')">
+                <span class="material-symbols-outlined text-sm">grid_view</span>
+                All
+              </button>
+            </div>
+          } @else {
+            <p class="text-sm opacity-50 flex items-center gap-1">
+              <span class="material-symbols-outlined text-sm">search</span>
+              Showing events on <strong class="opacity-80 ml-1">{{ searchDate() }}</strong>
+            </p>
+          }
+        </div>
+      </div>
+
+      <!-- EVENTS GRID -->
+      <section class="bg-base-100 py-12">
+        <div class="max-w-[1200px] mx-auto px-6 md:px-10 flex flex-col gap-6">
+
+          <!-- Result count -->
+          <p class="text-sm opacity-40">
+            {{ filteredEvents().length }} event{{ filteredEvents().length !== 1 ? 's' : '' }}
+            @if (searchDate()) { on {{ searchDate() }} }
+            @else { — {{ activeFilter() }} }
+          </p>
+
+          <!-- Empty state -->
+          @if (filteredEvents().length === 0) {
+            <div class="text-center py-24 flex flex-col items-center gap-4 opacity-30">
+              <span class="material-symbols-outlined text-7xl">event_busy</span>
+              <p class="display text-3xl tracking-widest">
+                @if (searchDate()) { No events on this date }
+                @else if (activeFilter() === 'upcoming') { No upcoming events yet }
+                @else { No events found }
+              </p>
+              <p class="text-sm">
+                @if (searchDate()) { Try a different date or clear the filter. }
+                @else { Check back soon — something bold is coming. }
+              </p>
+              @if (searchDate()) {
+                <button class="btn btn-ghost btn-sm rounded-full" (click)="clearSearch()">
+                  Clear date filter
+                </button>
+              }
+            </div>
+
+          } @else {
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              @for (event of filteredEvents(); track event.id) {
+                <div class="card bg-base-200 overflow-hidden group cursor-pointer
+                            hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1
+                            transition-all duration-300 border border-transparent hover:border-primary/20"
+                     [class.opacity-60]="isPast(event.date)"
+                     (click)="openEvent(event)">
+
+                  <!-- Top color strip -->
+                  <div class="h-1 w-full"
+                       [class.bg-primary]="event.type === 'outreach'"
+                       [class.bg-secondary]="event.type === 'worship'"
+                       [class.bg-accent]="event.type === 'prayer'"
+                       [class.bg-neutral]="event.type === 'other'"></div>
+
+                  <div class="card-body p-5 gap-4">
+
+                    <!-- Date block + type icon -->
+                    <div class="flex items-start justify-between">
+                      <div class="flex items-center gap-3">
+                        <!-- Date block -->
+                        <div class="rounded-xl flex flex-col items-center justify-center px-3 py-2 min-w-[56px] text-center shrink-0"
+                             [class]="getConfig(event.type).bg">
+                          <p class="display text-2xl tracking-widest leading-none"
+                             [class]="getConfig(event.type).text">
+                            {{ getDay(event.date) }}
+                          </p>
+                          <p class="text-xs font-black uppercase tracking-wider opacity-70"
+                             [class]="getConfig(event.type).text">
+                            {{ getMonth(event.date) }}
+                          </p>
+                        </div>
+
+                        <!-- Badges -->
+                        <div class="flex flex-col gap-1">
+                          <div class="badge badge-sm rounded-full font-bold capitalize"
+                               [class]="getConfig(event.type).badge">
+                            {{ event.type }}
+                          </div>
+                          @if (isToday(event.date)) {
+                            <div class="badge badge-sm badge-success rounded-full font-bold">Today!</div>
+                          } @else if (isPast(event.date)) {
+                            <div class="badge badge-sm badge-ghost rounded-full font-bold opacity-50">Past</div>
+                          }
+                        </div>
+                      </div>
+
+                      <!-- Type icon -->
+                      <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0 opacity-60 group-hover:opacity-100 transition-opacity"
+                           [class]="getConfig(event.type).bg">
+                        <span class="material-symbols-outlined text-lg"
+                              [class]="getConfig(event.type).text"
+                              style="font-variation-settings:'FILL' 1">
+                          {{ getConfig(event.type).icon }}
+                        </span>
+                      </div>
+                    </div>
+
+                    <!-- Title -->
+                    <h3 class="font-black text-base leading-tight line-clamp-2 group-hover:text-primary transition-colors">
+                      {{ event.title }}
+                    </h3>
+
+                    <!-- Meta -->
+                    <div class="flex flex-col gap-1.5 text-xs opacity-50">
+                      @if (event.time) {
+                        <span class="flex items-center gap-1.5">
+                          <span class="material-symbols-outlined text-xs">schedule</span>
+                          {{ formatTime(event.time) }}
+                        </span>
+                      }
+                      @if (event.location) {
+                        <span class="flex items-center gap-1.5">
+                          <span class="material-symbols-outlined text-xs">location_on</span>
+                          {{ event.location }}
+                        </span>
+                      }
+                    </div>
+
+                    @if (event.description) {
+                      <p class="text-xs opacity-40 leading-relaxed line-clamp-2">{{ event.description }}</p>
+                    }
+
+                    <!-- CTA -->
+                    <div class="pt-1 border-t border-base-content/5">
+                      @if (!isPast(event.date)) {
+                        <p class="text-xs font-bold flex items-center gap-1"
+                           [class]="getConfig(event.type).text">
+                          <span class="material-symbols-outlined text-sm">how_to_reg</span>
+                          Click to RSVP
+                        </p>
+                      } @else {
+                        <p class="text-xs opacity-30 flex items-center gap-1">
+                          <span class="material-symbols-outlined text-sm">history</span>
+                          Event has passed
+                        </p>
+                      }
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </section>
+
+      <!-- LEGEND -->
+      <section class="bg-base-200 py-10">
+        <div class="max-w-[1200px] mx-auto px-6 md:px-10">
+          <p class="text-xs opacity-30 uppercase tracking-wider font-bold mb-4">Event Types</p>
+          <div class="flex flex-wrap gap-3">
+            <div class="flex items-center gap-2 bg-base-100 rounded-full px-4 py-2">
+              <span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings:'FILL' 1">campaign</span>
+              <span class="text-xs font-bold">Outreach</span>
+            </div>
+            <div class="flex items-center gap-2 bg-base-100 rounded-full px-4 py-2">
+              <span class="material-symbols-outlined text-secondary text-sm" style="font-variation-settings:'FILL' 1">music_note</span>
+              <span class="text-xs font-bold">Worship Night</span>
+            </div>
+            <div class="flex items-center gap-2 bg-base-100 rounded-full px-4 py-2">
+              <span class="material-symbols-outlined text-accent text-sm" style="font-variation-settings:'FILL' 1">self_improvement</span>
+              <span class="text-xs font-bold">Prayer</span>
+            </div>
+            <div class="flex items-center gap-2 bg-base-100 rounded-full px-4 py-2">
+              <span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1">event</span>
+              <span class="text-xs font-bold">Other</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA BANNER -->
+      <section class="relative py-20 overflow-hidden"
+               style="background: linear-gradient(135deg, #6A0DAD, #3d0670, oklch(20% 0.042 265.755))">
+        <div class="absolute top-0 right-0 w-96 h-96 rounded-full bg-secondary/10 blur-3xl pointer-events-none"></div>
+        <div class="absolute bottom-0 left-1/4 w-64 h-64 rounded-full bg-white/5 blur-3xl pointer-events-none"></div>
+        <div class="relative max-w-[1200px] mx-auto px-6 md:px-10 text-center flex flex-col items-center gap-6">
+          <div class="badge badge-accent rounded-full font-bold uppercase tracking-wider px-4 py-2">
+            Don't Miss Out
+          </div>
+          <h2 class="display text-5xl md:text-6xl tracking-widest text-white leading-none">
+            Show Up.<br/><span class="text-secondary">Be Bold.</span>
+          </h2>
+          <p class="text-white/60 max-w-md leading-relaxed">
+            Every event is a chance to take the gospel further. Join us and be part of something bigger than yourself.
+          </p>
+          <div class="flex flex-wrap gap-3 justify-center">
+            <a routerLink="/join" class="btn btn-secondary rounded-full font-bold px-10 shadow-lg">
+              <span class="material-symbols-outlined">group_add</span> Join the Movement
+            </a>
+            <a routerLink="/worship" class="btn btn-ghost rounded-full font-bold px-8 text-white border border-white/20 hover:bg-white/10">
+              <span class="material-symbols-outlined">play_circle</span> Watch Worship
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- FOOTER -->
+      <footer class="bg-primary text-primary-content pt-16 pb-8">
+        <div class="max-w-[1200px] mx-auto px-6 md:px-10 flex flex-col gap-12">
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-10">
+            <div class="md:col-span-1 flex flex-col gap-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
+                  <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">auto_awesome</span>
+                </div>
+                <span class="display text-2xl tracking-widest">I AM BOLD</span>
+              </div>
+              <p class="text-sm opacity-60 leading-relaxed">A movement for the bold, the brave, and the unashamed.</p>
+            </div>
+            <div class="flex flex-col gap-3">
+              <p class="font-black text-sm uppercase tracking-wider opacity-40">Movement</p>
+              <a routerLink="/about" class="text-sm opacity-60 hover:opacity-100 transition-opacity">About</a>
+              <a routerLink="/join" class="text-sm opacity-60 hover:opacity-100 transition-opacity">Join Us</a>
+              <a routerLink="/give" class="text-sm opacity-60 hover:opacity-100 transition-opacity">Give</a>
+            </div>
+            <div class="flex flex-col gap-3">
+              <p class="font-black text-sm uppercase tracking-wider opacity-40">Content</p>
+              <a routerLink="/worship" class="text-sm opacity-60 hover:opacity-100 transition-opacity">Worship</a>
+              <a routerLink="/events" class="text-sm opacity-60 hover:opacity-100 transition-opacity">Events</a>
+              <a routerLink="/wear" class="text-sm opacity-60 hover:opacity-100 transition-opacity">Wear &amp; Share</a>
+            </div>
+            <div class="flex flex-col gap-3">
+              <p class="font-black text-sm uppercase tracking-wider opacity-40">Stay Bold</p>
+              <p class="text-sm opacity-60">Get updates on new drops and events.</p>
+              <a routerLink="/join" class="btn btn-sm rounded-full bg-white/10 hover:bg-white/20 border-0 font-bold text-primary-content">
+                Join the Movement
+              </a>
+            </div>
+          </div>
+          <div class="border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <p class="text-xs opacity-30">© 2026 I Am Bold For Jesus. All rights reserved.</p>
+            <p class="text-xs opacity-30 italic">"I am not ashamed of the gospel" — Romans 1:16</p>
+          </div>
+        </div>
+      </footer>
+
+    </div>
+
+    <!-- Drawer sidebar -->
+    <div class="drawer-side z-[100]">
+      <label for="events-drawer" class="drawer-overlay"></label>
+      <ul class="menu bg-base-200 min-h-full w-72 p-6 gap-1 text-base-content">
+        <li class="mb-4">
+          <a routerLink="/" class="flex items-center gap-3 p-0 hover:bg-transparent">
+            <div class="w-9 h-9 rounded-full bg-primary flex items-center justify-center">
+              <span class="material-symbols-outlined text-primary-content text-base" style="font-variation-settings:'FILL' 1">auto_awesome</span>
+            </div>
+            <span class="display text-xl tracking-widest text-primary">I AM BOLD</span>
+          </a>
+        </li>
+        <li><a routerLink="/" class="rounded-full font-semibold">Home</a></li>
+        <li><a routerLink="/about" class="rounded-full font-semibold">About</a></li>
+        <li><a routerLink="/worship" class="rounded-full font-semibold">Worship</a></li>
+        <li><a routerLink="/wear" class="rounded-full font-semibold">Wear &amp; Share</a></li>
+        <li><a routerLink="/events" class="rounded-full font-semibold text-secondary">Events</a></li>
+        <li><a routerLink="/give" class="rounded-full font-semibold">Give</a></li>
+        <li class="mt-4">
+          <a routerLink="/join" class="btn btn-primary rounded-full font-bold">Join Now</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+</div>

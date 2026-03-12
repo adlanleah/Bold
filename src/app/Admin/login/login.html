@@ -1,0 +1,142 @@
+<div class="min-h-screen bg-base-100 text-base-content flex items-center justify-center px-4 py-12 relative overflow-hidden">
+
+  <!-- Floating cross decorations -->
+  <div class="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+    @for (i of crosses; track i) {
+      <span class="absolute text-primary/10 select-none animate-pulse display"
+            [style.left]="(i * 13.7 % 100) + '%'"
+            [style.top]="(i * 17.3 % 100) + '%'"
+            [style.font-size]="(1.2 + (i % 4) * 0.6) + 'rem'"
+            [style.animation-delay]="(i * 0.4) + 's'">✝</span>
+    }
+  </div>
+
+  <!-- Radial glow blob -->
+  <div class="absolute w-[600px] h-[600px] rounded-full bg-primary/10 blur-[120px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true"></div>
+
+  <!-- Login panel -->
+  <div class="relative z-10 w-full max-w-md flex flex-col items-center gap-8">
+
+    <!-- Brand -->
+    <div class="flex items-center gap-4">
+      <div class="w-14 h-14 rounded-full bg-primary flex items-center justify-center shadow-lg shadow-primary/40">
+        <span class="material-symbols-outlined text-primary-content text-2xl" style="font-variation-settings:'FILL' 1">auto_awesome</span>
+      </div>
+      <div class="flex flex-col leading-none gap-0.5">
+        <span class="display text-3xl tracking-widest text-primary">I AM BOLD</span>
+        <span class="display text-sm tracking-[0.25em] text-secondary">FOR JESUS</span>
+      </div>
+    </div>
+
+    <!-- Card -->
+    <div class="card bg-base-200 w-full shadow-2xl border border-primary/10">
+      <div class="card-body p-8 gap-6">
+
+        <!-- Heading -->
+        <div class="flex flex-col gap-1">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-warning" style="font-variation-settings:'FILL' 1">shield_person</span>
+            <h1 class="display text-4xl tracking-widest">Admin Access</h1>
+          </div>
+          <p class="text-sm opacity-40">Sign in to manage your movement's content.</p>
+        </div>
+
+        <!-- Error alert -->
+        @if (error()) {
+          <div role="alert" class="alert alert-error rounded-box py-3 px-4">
+            <span class="material-symbols-outlined text-lg" style="font-variation-settings:'FILL' 1">cancel</span>
+            <span class="text-sm font-semibold">{{ error() }}</span>
+          </div>
+        }
+
+        <!-- Form -->
+        <form [formGroup]="loginForm" (ngSubmit)="submit()" novalidate class="flex flex-col gap-5">
+
+        <!-- Email field -->
+        <fieldset class="fieldset gap-1.5">
+            <legend class="fieldset-legend">Email Address</legend>
+            <label class="input rounded-full w-full"
+                [class.input-error]="email.invalid && email.touched"
+                [class.input-primary]="email.valid && email.touched">
+            <span class="material-symbols-outlined">alternate_email</span>
+            <input
+                type="email"
+                formControlName="email"
+                placeholder="pastor@iambold.org"
+                autocomplete="email"
+            />
+            </label>
+            @if (email.invalid && email.touched) {
+            <p class="text-error text-xs">Email is required or invalid.</p>
+            }
+        </fieldset>
+
+        <!-- Password field -->
+        <fieldset class="fieldset gap-1.5">
+            <legend class="fieldset-legend">Password</legend>
+            <label class="input rounded-full w-full"
+                [class.input-error]="password.invalid && password.touched"
+                [class.input-primary]="password.valid && password.touched">
+            <span class="material-symbols-outlined">lock</span>
+            <input
+                [type]="showPass() ? 'text' : 'password'"
+                formControlName="password"
+                placeholder="••••••••"
+                autocomplete="current-password"
+            />
+            <button type="button" (click)="showPass.set(!showPass())">
+                <span class="material-symbols-outlined">
+                {{ showPass() ? 'visibility_off' : 'visibility' }}
+                </span>
+            </button>
+            </label>
+            @if (password.invalid && password.touched) {
+            <p class="text-error text-xs">Password is required or too short.</p>
+            }
+        </fieldset>
+
+            <!-- Submit -->
+            <!-- Submit -->
+<button
+  type="submit"
+  class="btn btn-primary rounded-full w-full font-bold mt-2 shadow-lg shadow-primary/30"
+  [disabled]="loading()">
+  @if (loading()) {
+    <span class="loading loading-spinner loading-sm"></span>
+    Signing in…
+  } @else {
+    <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">login</span>
+    Enter Dashboard
+  }
+</button>
+
+<!-- Continue with Google -->
+<button
+  type="button"
+  class="btn btn-outline rounded-full w-full font-bold mt-2 flex items-center gap-2"
+  (click)="continueWithGoogle()"
+  [disabled]="loading()">
+  <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google logo" class="w-5 h-5">
+  Continue with Google
+</button>
+            </form>
+
+        <!-- Footer -->
+        <div class="flex items-center justify-between pt-2 border-t border-base-content/10">
+          <a routerLink="/" class="btn btn-ghost btn-sm rounded-full gap-1 opacity-50 hover:opacity-100">
+            <span class="material-symbols-outlined text-sm">arrow_back</span>
+            Back to site
+          </a>
+          <div class="badge badge-warning badge-sm font-bold uppercase tracking-wider">Admin only</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Scripture -->
+    <p class="text-xs opacity-30 text-center italic px-4">
+      "For I am not ashamed of the gospel of Christ" — Romans 1:16
+    </p>
+
+  </div>
+</div>

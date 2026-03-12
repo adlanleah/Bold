@@ -1,1 +1,48 @@
-/* You can add global styles to this file, and also import other style files */
+@import "tailwindcss";
+@plugin "daisyui";
+
+@plugin "daisyui/theme" {
+  name: "boldforjesus";
+  default: false;
+  prefersdark: true;
+  color-scheme: "dark";
+  --color-base-100: oklch(20% 0.042 265.755);
+  --color-base-200: oklch(44% 0.03 256.802);
+  --color-base-300: oklch(37% 0.044 257.287);
+  --color-base-content: oklch(95% 0.045 203.388);
+  --color-primary: #6A0DAD;
+  --color-primary-content: oklch(100% 0 0);
+  --color-secondary: #7DE2B8;
+  --color-secondary-content: oklch(97% 0.014 254.604);
+  --color-accent: #FFD700;
+  --color-accent-content: oklch(98% 0 0);
+  --color-neutral: #3D4451;
+  --color-neutral-content: oklch(98% 0.019 200.873);
+  --color-info: #2094f3;
+  --color-info-content: oklch(98% 0.019 200.873);
+  --color-success: #009485;
+  --color-success-content: oklch(97% 0.021 166.113);
+  --color-warning: #ff9900;
+  --color-warning-content: oklch(98% 0.022 95.277);
+  --color-error: #ff5724;
+  --color-error-content: oklch(97% 0.013 17.38);
+  --radius-selector: 2rem;
+  --radius-field: 2rem;
+  --radius-box: 2rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 1;
+  --noise: 0;
+}
+
+.material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+
+    body {
+      font-family: 'Saria', sans-serif;
+    }
+
+    /* Navbar drawer */
+    .drawer-side .menu a:hover { color: oklch(var(--color-secondary)); }

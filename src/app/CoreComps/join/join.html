@@ -1,0 +1,291 @@
+<div class="min-h-screen bg-base-100 text-base-content">
+
+  <!-- ── NAVBAR ── -->
+  <div class="drawer">
+    <input id="join-drawer" type="checkbox" class="drawer-toggle" />
+    <div class="drawer-content flex flex-col">
+
+      <header class="navbar sticky top-0 z-50 bg-base-100/80 backdrop-blur-md border-b border-base-300 px-4 md:px-10">
+        <div class="navbar-start">
+          <label for="join-drawer" class="btn btn-ghost btn-circle drawer-button lg:hidden">
+            <span class="material-symbols-outlined">menu</span>
+          </label>
+          <a routerLink="/" class="flex items-center gap-3 ml-2 lg:ml-0">
+            <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-content">
+              <span class="material-symbols-outlined">auto_awesome</span>
+            </div>
+            <span class="font-black text-xl uppercase tracking-tight display">I AM BOLD</span>
+          </a>
+        </div>
+        <div class="navbar-center hidden lg:flex">
+          <ul class="menu menu-horizontal gap-1 font-semibold text-sm">
+           <li><a routerLink="/" class="rounded-full">Home</a></li>
+           <li><a routerLink="/join" class="rounded-full text-secondary font-bold">Join</a></li>
+            <li><a routerLink="/about" class="rounded-full">About</a></li>
+            <li><a routerLink="/worship" class="rounded-full">Worship</a></li>
+            <li><a routerLink="/wear" class="rounded-full">Wear &amp; Share</a></li>
+            <li><a routerLink="/events" class="rounded-full">Events</a></li>
+            <li><a routerLink="/give" class="rounded-full">Give</a></li>
+          </ul>
+        </div>
+        <div class="navbar-end gap-3">
+          <a routerLink="/join" class="btn btn-primary btn-sm rounded-full font-bold tracking-wide shadow-lg">Join Now</a>
+        </div>
+      </header>
+
+      <main>
+
+        <!-- ── HERO ── -->
+        <section class="relative w-full overflow-hidden" style="min-height: 520px;">
+          <div class="absolute inset-0 bg-cover bg-center"
+               style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBbKKIIsFVKYG5K8T5cDRziiP82hOgBFqdyI5NRK0YNq180HPwHF6TSvjhm8uTSJoY-bxeqiT5y8HHZHy3tR3RVzHrJtS0R_eLdM9pAFbK9YFyinyUqxSOOpszOJYeYxIRkNhsGBiT9yclS_PLjNmazTBfvPJTD_EBP0O6cukQUXRkqLEO0jjE-q8x83ZSkgqA2TX0e8NABc1WohX5aoGeSnfiasGJslNYa4NMIVPJRheepI1Z8ku4_6vBI_5pOfgOC9BIBPbvTM2g');"></div>
+          <div class="absolute inset-0"
+               style="background: linear-gradient(to right, oklch(20% 0.042 265.755) 40%, rgba(106,13,173,0.1) 100%);"></div>
+
+          <div class="relative max-w-[1200px] mx-auto px-6 md:px-10 flex items-center" style="min-height: 520px;">
+            <div class="max-w-2xl flex flex-col gap-6 py-20">
+              <div class="badge badge-secondary font-bold uppercase tracking-wider px-4 py-3 rounded-full">
+                Active Revival
+              </div>
+              <h1 class="display text-6xl md:text-8xl text-white leading-[0.95]">
+                Join the<br/>Movement
+              </h1>
+              <p class="text-white/75 text-lg md:text-xl leading-relaxed max-w-xl">
+                Become part of a generation of believers unashamed of the Gospel — standing bold, speaking loud, and living transformed.
+              </p>
+              <div class="flex flex-wrap gap-3 mt-2">
+                @if (formUrl()) {
+                  <a [href]="formUrl()" target="_blank" rel="noopener noreferrer"
+                     class="btn btn-primary rounded-full font-bold min-w-[200px] shadow-lg">
+                    <span class="material-symbols-outlined">edit_note</span>
+                    Fill the Form
+                  </a>
+                } @else {
+                  <button class="btn btn-primary rounded-full font-bold min-w-[200px]" disabled>
+                    <span class="material-symbols-outlined">hourglass_empty</span>
+                    Form Coming Soon
+                  </button>
+                }
+                <a routerLink="/about"
+                   class="btn btn-outline rounded-full font-bold border-white/30 text-white hover:bg-white/10 hover:border-white/30 min-w-[200px]">
+                  Learn More
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── WHY JOIN ── -->
+        <section class="max-w-[1200px] mx-auto px-6 md:px-10 py-24">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+
+            <div class="flex flex-col gap-6">
+              <div>
+                <span class="text-secondary font-bold uppercase tracking-widest text-xs">Why Join</span>
+                <h2 class="display text-5xl md:text-6xl mt-2 leading-tight">Be Bold.<br/>Be Seen.<br/>Be His.</h2>
+              </div>
+              <p class="text-lg leading-relaxed opacity-75">
+                I AM BOLD FOR JESUS is a global movement focused on leading each nation to Christ through public faith declaration, worship, and weekly evangelism. When you join, you're not just signing up — you're stepping into a calling.
+              </p>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">
+                @for (perk of perks; track perk.label) {
+                  <div class="flex items-center gap-3 p-3 rounded-box bg-base-200">
+                    <span class="material-symbols-outlined text-secondary">{{ perk.icon }}</span>
+                    <span class="font-semibold text-sm">{{ perk.label }}</span>
+                  </div>
+                }
+              </div>
+            </div>
+
+            <!-- CTA card -->
+            <div class="card bg-base-200 overflow-hidden relative">
+              <div class="absolute top-0 right-0 w-64 h-64 rounded-full bg-primary/5 -translate-y-1/3 translate-x-1/3"></div>
+              <div class="card-body p-10 gap-6 relative z-10">
+                <div class="flex items-center gap-4">
+                  <div class="w-14 h-14 rounded-full bg-primary/15 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-primary text-3xl">groups</span>
+                  </div>
+                  <div>
+                    <p class="font-black text-2xl text-primary display tracking-widest">Be a Founder</p>
+                    <p class="text-sm opacity-60">Launching 2026 — get in first</p>
+                  </div>
+                </div>
+                <div class="divider my-0 opacity-20"></div>
+                <p class="leading-relaxed opacity-75">
+                  Our community is launching across multiple countries. Be among the first — help lay the foundation of a movement that will outlast us all.
+                </p>
+
+                @if (formUrl()) {
+                  <a [href]="formUrl()" target="_blank" rel="noopener noreferrer"
+                     class="btn btn-primary rounded-full font-bold w-full shadow-lg shadow-primary/20">
+                    <span class="material-symbols-outlined">edit_note</span>
+                    Join the Movement
+                  </a>
+                  <p class="text-xs opacity-40 text-center">
+                    You'll be taken to a Google Form to complete your registration.
+                  </p>
+                } @else {
+                  <div class="alert bg-base-300 border-0 rounded-box">
+                    <span class="material-symbols-outlined text-secondary">schedule</span>
+                    <div>
+                      <p class="font-bold text-sm">Registration form coming soon</p>
+                      <p class="text-xs opacity-60">Check back shortly — the form will appear here once it's ready.</p>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ── HOW IT WORKS ── -->
+        <section class="w-full bg-base-200 py-24">
+          <div class="max-w-[1200px] mx-auto px-6 md:px-10">
+            <div class="text-center mb-16">
+              <span class="text-secondary font-bold uppercase tracking-widest text-xs">The Process</span>
+              <h2 class="display text-5xl md:text-6xl mt-2">How It Works</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+              <div class="absolute top-10 left-[20%] right-[20%] h-px bg-primary/20 hidden md:block"></div>
+
+              <div class="card bg-base-100 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/10 transition-all duration-300">
+                <div class="card-body p-8 gap-5 items-center text-center">
+                  <div class="w-20 h-20 rounded-full bg-secondary/15 flex items-center justify-center relative">
+                    <span class="material-symbols-outlined text-secondary text-4xl">description</span>
+                    <div class="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-primary flex items-center justify-center text-primary-content font-black text-xs display">1</div>
+                  </div>
+                  <h3 class="display text-2xl tracking-widest">Fill the Form</h3>
+                  <p class="opacity-70 leading-relaxed text-sm">Click the join button and fill out our Google Form — tell us about yourself and your journey with Christ.</p>
+                </div>
+              </div>
+
+              <div class="card bg-primary text-primary-content hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/30 transition-all duration-300">
+                <div class="card-body p-8 gap-5 items-center text-center">
+                  <div class="w-20 h-20 rounded-full bg-primary-content/10 flex items-center justify-center relative">
+                    <span class="material-symbols-outlined text-primary-content text-4xl">chat</span>
+                    <div class="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-secondary flex items-center justify-center text-base-100 font-black text-xs display">2</div>
+                  </div>
+                  <h3 class="display text-2xl tracking-widest">WhatsApp Connect</h3>
+                  <p class="opacity-80 leading-relaxed text-sm">Our team will reach out via WhatsApp to welcome you and add you to your local coordination group.</p>
+                </div>
+              </div>
+
+              <div class="card bg-base-100 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/10 transition-all duration-300">
+                <div class="card-body p-8 gap-5 items-center text-center">
+                  <div class="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center relative">
+                    <span class="material-symbols-outlined text-primary text-4xl">apparel</span>
+                    <div class="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-primary flex items-center justify-center text-primary-content font-black text-xs display">3</div>
+                  </div>
+                  <h3 class="display text-2xl tracking-widest">Get Gear &amp; Go</h3>
+                  <p class="opacity-70 leading-relaxed text-sm">Receive your official Bold for Jesus apparel and start making an impact in your community from day one.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── CTA BANNER ── -->
+        <section class="px-6 md:px-10 py-24">
+          <div class="max-w-[1200px] mx-auto">
+            <div class="rounded-box overflow-hidden relative"
+                 style="background: linear-gradient(135deg, #6A0DAD 0%, #3d0670 60%, oklch(20% 0.042 265.755) 100%);">
+              <div class="absolute inset-0 opacity-10"
+                   style="background-image: radial-gradient(circle at 20% 50%, #7DE2B8 0%, transparent 50%), radial-gradient(circle at 80% 50%, #FFD700 0%, transparent 50%);"></div>
+              <div class="relative px-8 md:px-16 py-16 flex flex-col md:flex-row items-center justify-between gap-10">
+                <div class="flex flex-col gap-4 max-w-lg">
+                  <h2 class="display text-4xl md:text-5xl text-white leading-tight">
+                    The World is Waiting.<br/>Are You Bold Enough?
+                  </h2>
+                  <p class="text-white/70 text-lg leading-relaxed">
+                    Every revival in history started with ordinary people who said yes. This is your moment.
+                  </p>
+                </div>
+                <div class="flex flex-col gap-3 shrink-0">
+                  @if (formUrl()) {
+                    <a [href]="formUrl()" target="_blank" rel="noopener noreferrer"
+                       class="btn btn-secondary rounded-full font-bold text-base-100 min-w-[200px] shadow-lg">
+                      <span class="material-symbols-outlined">edit_note</span>
+                      Fill the Form
+                    </a>
+                  } @else {
+                    <button class="btn btn-secondary rounded-full font-bold text-base-100 min-w-[200px]" disabled>
+                      <span class="material-symbols-outlined">hourglass_empty</span>
+                      Form Coming Soon
+                    </button>
+                  }
+                  <a routerLink="/give"
+                     class="btn btn-ghost rounded-full font-bold border border-white/30 text-white hover:bg-white/10 hover:border-white/30 min-w-[200px]">
+                    <span class="material-symbols-outlined">volunteer_activism</span>
+                    Give &amp; Partner
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+
+      <!-- ── FOOTER ── -->
+      <footer class="bg-primary text-primary-content pt-16 pb-8">
+        <div class="max-w-[1200px] mx-auto px-6 md:px-10 flex flex-col gap-12">
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-10">
+            <div class="md:col-span-1 flex flex-col gap-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
+                  <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">auto_awesome</span>
+                </div>
+                <span class="display text-2xl tracking-widest">I AM BOLD</span>
+              </div>
+              <p class="text-sm opacity-60 leading-relaxed">A movement for the bold, the brave, and the unashamed.</p>
+            </div>
+            <div class="flex flex-col gap-3">
+              <p class="font-black text-sm uppercase tracking-wider opacity-40">Movement</p>
+              <a routerLink="/about" class="text-sm opacity-60 hover:opacity-100 transition-opacity">About</a>
+              <a routerLink="/join" class="text-sm opacity-60 hover:opacity-100 transition-opacity">Join Us</a>
+              <a routerLink="/give" class="text-sm opacity-60 hover:opacity-100 transition-opacity">Give</a>
+            </div>
+            <div class="flex flex-col gap-3">
+              <p class="font-black text-sm uppercase tracking-wider opacity-40">Content</p>
+              <a routerLink="/worship" class="text-sm opacity-60 hover:opacity-100 transition-opacity">Worship</a>
+              <a routerLink="/events" class="text-sm opacity-60 hover:opacity-100 transition-opacity">Events</a>
+              <a routerLink="/wear" class="text-sm opacity-60 hover:opacity-100 transition-opacity">Wear &amp; Share</a>
+            </div>
+            <div class="flex flex-col gap-3">
+              <p class="font-black text-sm uppercase tracking-wider opacity-40">Stay Bold</p>
+              <p class="text-sm opacity-60">Get updates on new drops and events.</p>
+              <a routerLink="/join" class="btn btn-sm rounded-full bg-white/10 hover:bg-white/20 border-0 font-bold text-primary-content">
+                Join the Movement
+              </a>
+            </div>
+          </div>
+          <div class="border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <p class="text-xs opacity-30">© 2026 I Am Bold For Jesus. All rights reserved.</p>
+            <p class="text-xs opacity-30 italic">"I am not ashamed of the gospel" — Romans 1:16</p>
+          </div>
+        </div>
+      </footer>
+
+    </div>
+
+    <!-- Mobile drawer -->
+    <div class="drawer-side z-[100]">
+      <label for="join-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
+      <ul class="menu bg-base-200 min-h-full w-64 p-6 gap-2 font-semibold">
+        <li class="mb-6"><span class="font-black text-xl display text-primary">I AM BOLD</span></li>
+        <li><a routerLink="/" class="rounded-full font-semibold">Home</a></li>
+        <li><a routerLink="/about" class="rounded-full font-semibold">About</a></li>
+        <li><a routerLink="/worship" class="rounded-full font-semibold">Worship</a></li>
+        <li><a routerLink="/wear" class="rounded-full font-semibold">Wear &amp; Share</a></li>
+        <li><a routerLink="/events" class="rounded-full font-semibold">Events</a></li>
+        <li><a routerLink="/give" class="rounded-full font-semibold">Give</a></li>
+        <li class="mt-4">
+          <a routerLink="/join" class="btn btn-primary rounded-full font-bold">Join Now</a>
+       </li>
+      </ul>
+    </div>
+  </div>
+
+</div>

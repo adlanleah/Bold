@@ -1,0 +1,696 @@
+<div class="min-h-screen bg-base-100 text-base-content">
+
+  <!-- ── NAVBAR ── -->
+  <header class="navbar bg-base-200 border-b border-base-300 px-6 sticky top-0 z-50">
+    <div class="navbar-start gap-3">
+      <a routerLink="/" class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-primary-content">
+          <span class="material-symbols-outlined text-lg">auto_awesome</span>
+        </div>
+        <span class="font-black text-lg display tracking-widest text-primary">I AM BOLD</span>
+      </a>
+      <div class="badge badge-warning badge-sm font-bold uppercase tracking-wider">Admin</div>
+    </div>
+    <div class="navbar-end">
+      <a routerLink="/" class="btn btn-ghost btn-sm rounded-full gap-1">
+        <span class="material-symbols-outlined text-base">open_in_new</span>
+        View Site
+      </a>
+    </div>
+  </header>
+
+  <!-- ── TOAST ── -->
+  @if (toast()) {
+    <div class="toast toast-top toast-end z-[999]">
+      <div class="alert rounded-box shadow-lg py-3 px-5"
+           [class.bg-success]="toast()!.type === 'success'"
+           [class.text-success-content]="toast()!.type === 'success'"
+           [class.bg-error]="toast()!.type === 'error'"
+           [class.text-error-content]="toast()!.type === 'error'">
+        <span class="material-symbols-outlined text-lg">
+          {{ toast()!.type === 'success' ? 'check_circle' : 'cancel' }}
+        </span>
+        <span class="font-semibold text-sm">{{ toast()!.message }}</span>
+      </div>
+    </div>
+  }
+
+  <div class="max-w-[1200px] mx-auto px-6 md:px-10 py-10">
+
+    <div class="mb-8">
+      <h1 class="display text-5xl tracking-widest">Dashboard</h1>
+      <p class="opacity-40 mt-1 text-sm">Manage your movement's content from one place.</p>
+    </div>
+
+    <!-- ── TABS ── -->
+    <div role="tablist" class="tabs tabs-box mb-8 bg-base-200 rounded-full p-1 w-fit gap-1">
+      <button role="tab" class="tab rounded-full font-bold gap-2 transition-all"
+              [class.tab-active]="activeTab() === 'forms'" (click)="activeTab.set('forms')">
+        <span class="material-symbols-outlined text-base">link</span> Form Links
+      </button>
+      <button role="tab" class="tab rounded-full font-bold gap-2 transition-all"
+              [class.tab-active]="activeTab() === 'merch'" (click)="activeTab.set('merch')">
+        <span class="material-symbols-outlined text-base">checkroom</span> Merch
+      </button>
+      <button role="tab" class="tab rounded-full font-bold gap-2 transition-all"
+              [class.tab-active]="activeTab() === 'media'" (click)="activeTab.set('media')">
+        <span class="material-symbols-outlined text-base">play_circle</span> Sermons &amp; Worship
+      </button>
+      <button role="tab" class="tab rounded-full font-bold gap-2 transition-all"
+              [class.tab-active]="activeTab() === 'events'" (click)="activeTab.set('events')">
+        <span class="material-symbols-outlined text-base">calendar_month</span> Events
+      </button>
+    </div>
+
+    <!-- ════════════════════════════════════
+         TAB 1 — FORM LINKS
+    ════════════════════════════════════ -->
+    @if (activeTab() === 'forms') {
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        @for (page of formPages; track page.key) {
+          <div class="card bg-base-200">
+            <div class="card-body p-6 gap-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-primary">{{ page.icon }}</span>
+                </div>
+                <div>
+                  <h3 class="font-black text-lg">{{ page.label }}</h3>
+                  <p class="text-xs opacity-50">{{ page.description }}</p>
+                </div>
+              </div>
+              @if (getLiveUrl(page.key)) {
+                <div class="flex items-center gap-2 p-2 bg-success/10 border border-success/20 rounded-box">
+                  <span class="material-symbols-outlined text-success text-sm">check_circle</span>
+                  <a [href]="getLiveUrl(page.key)" target="_blank" class="text-xs text-success truncate flex-1 hover:underline">{{ getLiveUrl(page.key) }}</a>
+                </div>
+              } @else {
+                <div class="flex items-center gap-2 p-2 bg-warning/10 border border-warning/20 rounded-box">
+                  <span class="material-symbols-outlined text-warning text-sm">warning</span>
+                  <p class="text-xs opacity-60">Not set — button disabled for visitors</p>
+                </div>
+              }
+              <label class="input rounded-full w-full">
+                <span class="material-symbols-outlined opacity-40 text-sm">link</span>
+                <input type="url" placeholder="https://docs.google.com/forms/..."
+                       [(ngModel)]="draftUrls[page.key]" [name]="page.key" />
+              </label>
+              <div class="flex gap-2">
+                <button class="btn btn-primary btn-sm rounded-full flex-1 font-bold"
+                        (click)="saveFormUrl(page.key)" [disabled]="!draftUrls[page.key].trim()">
+                  <span class="material-symbols-outlined text-sm">save</span> Save
+                </button>
+                <button class="btn btn-ghost btn-sm rounded-full border border-base-content/20 font-bold"
+                        (click)="clearFormUrl(page.key)" [disabled]="!getLiveUrl(page.key)">
+                  <span class="material-symbols-outlined text-sm">link_off</span> Clear
+                </button>
+              </div>
+            </div>
+          </div>
+        }
+        <div class="card bg-base-200 border border-secondary/20 md:col-span-2">
+          <div class="card-body flex-row items-start gap-4 p-5">
+            <span class="material-symbols-outlined text-secondary text-xl mt-0.5">info</span>
+            <div>
+              <p class="font-bold text-sm mb-1">How to get a Google Forms share link</p>
+              <ol class="text-xs opacity-60 list-decimal pl-4 flex flex-col gap-0.5 leading-relaxed">
+                <li>Open your form in Google Forms</li>
+                <li>Click <strong>Send</strong> (top right)</li>
+                <li>Select the <strong>link icon</strong> tab</li>
+                <li>Copy the URL and paste it in the field above</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- ════════════════════════════════════
+         TAB 2 — MERCH
+    ════════════════════════════════════ -->
+    @if (activeTab() === 'merch') {
+      <div class="flex flex-col gap-8">
+
+        <div class="card bg-base-200">
+          <div class="card-body p-6 gap-5">
+            <h2 class="display text-3xl tracking-widest">Add Product</h2>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <fieldset class="fieldset gap-1">
+                <legend class="fieldset-legend text-xs uppercase tracking-wider opacity-40">Product Name *</legend>
+                <label class="input rounded-full w-full">
+                  <span class="material-symbols-outlined opacity-40 text-sm">label</span>
+                  <input type="text" placeholder="Bold Signature Tee" [(ngModel)]="newMerch.name" name="mName" />
+                </label>
+              </fieldset>
+              <fieldset class="fieldset gap-1">
+                <legend class="fieldset-legend text-xs uppercase tracking-wider opacity-40">Price (USD) *</legend>
+                <label class="input rounded-full w-full">
+                  <span class="material-symbols-outlined opacity-40 text-sm">attach_money</span>
+                  <input type="number" placeholder="29" [(ngModel)]="newMerch.price" name="mPrice" min="0" />
+                </label>
+              </fieldset>
+              <fieldset class="fieldset gap-1">
+                <legend class="fieldset-legend text-xs uppercase tracking-wider opacity-40">Category</legend>
+                <select class="select select-bordered rounded-full w-full" [(ngModel)]="newMerch.category" name="mCat">
+                  <option value="shirt">Shirt</option>
+                  <option value="hoodie">Hoodie</option>
+                  <option value="accessory">Accessory</option>
+                  <option value="other">Other</option>
+                </select>
+              </fieldset>
+            </div>
+
+            <!-- ── IMAGE: URL or Upload toggle ── -->
+            <div class="flex flex-col gap-3">
+              <div class="flex items-center justify-between">
+                <p class="text-xs font-bold uppercase tracking-wider opacity-40">Product Image</p>
+                <div class="join rounded-full overflow-hidden border border-base-content/10">
+                  <button class="btn btn-xs join-item rounded-none font-bold px-4"
+                          [class.btn-primary]="merchImageMode() === 'url'"
+                          [class.btn-ghost]="merchImageMode() !== 'url'"
+                          (click)="merchImageMode.set('url'); clearMerchFile()">
+                    <span class="material-symbols-outlined text-sm">link</span> URL
+                  </button>
+                  <button class="btn btn-xs join-item rounded-none font-bold px-4"
+                          [class.btn-primary]="merchImageMode() === 'upload'"
+                          [class.btn-ghost]="merchImageMode() !== 'upload'"
+                          (click)="merchImageMode.set('upload')">
+                    <span class="material-symbols-outlined text-sm">upload</span> Upload
+                  </button>
+                </div>
+              </div>
+
+              @if (merchImageMode() === 'url') {
+                <label class="input rounded-full w-full">
+                  <span class="material-symbols-outlined opacity-40 text-sm">image</span>
+                  <input type="url" placeholder="https://..." [(ngModel)]="newMerch.image" name="mImg" />
+                </label>
+              } @else {
+                <!-- Drag & Drop zone -->
+                @if (!merchImageFile()) {
+                  <div
+                    class="border-2 border-dashed rounded-box p-8 text-center cursor-pointer transition-colors"
+                    [class.border-primary]="merchDragOver()"
+                    [class.bg-primary/5]="merchDragOver()"
+                    [class.border-base-content/20]="!merchDragOver()"
+                    (dragover)="$event.preventDefault(); merchDragOver.set(true)"
+                    (dragleave)="merchDragOver.set(false)"
+                    (drop)="onMerchFileDrop($event)"
+                    (click)="merchFileInput.click()">
+                    <span class="material-symbols-outlined text-4xl opacity-30 mb-2 block">add_photo_alternate</span>
+                    <p class="font-semibold text-sm opacity-60">Drag &amp; drop an image here</p>
+                    <p class="text-xs opacity-40 mt-1">or click to browse — JPG, PNG, WEBP</p>
+                    <input #merchFileInput type="file" accept="image/*" class="hidden" (change)="onMerchFileInput(merchFileInput.files)" />
+                  </div>
+                } @else {
+                  <!-- Preview -->
+                  <div class="flex items-center gap-4 p-3 bg-base-300 rounded-box">
+                    <img [src]="merchImagePreview()" alt="preview"
+                         class="w-16 h-16 object-cover rounded-box shrink-0" />
+                    <div class="flex-1 min-w-0">
+                      <p class="font-bold text-sm truncate">{{ merchImageFile()!.name }}</p>
+                      <p class="text-xs opacity-50">{{ formatFileSize(merchImageFile()!.size) }}</p>
+                      @if (merchUploading()) {
+                        <progress class="progress progress-primary w-full mt-2 h-1"
+                                  [value]="merchUploadProgress()" max="100"></progress>
+                        <p class="text-xs opacity-50 mt-1">Uploading {{ merchUploadProgress() }}%…</p>
+                      }
+                    </div>
+                    <button class="btn btn-ghost btn-sm btn-circle shrink-0" (click)="clearMerchFile()"
+                            [disabled]="merchUploading()">
+                      <span class="material-symbols-outlined text-base">close</span>
+                    </button>
+                  </div>
+                }
+              }
+            </div>
+
+            <div class="flex items-center gap-3">
+              <input type="checkbox" class="toggle toggle-success toggle-sm" [(ngModel)]="newMerch.inStock" name="mStock" />
+              <span class="text-sm font-semibold">In Stock</span>
+            </div>
+
+            <button class="btn btn-primary rounded-full font-bold w-full shadow-lg shadow-primary/20"
+                    (click)="addMerch()"
+                    [disabled]="!newMerch.name || !newMerch.price || merchUploading()">
+              @if (merchUploading()) {
+                <span class="loading loading-spinner loading-sm"></span> Uploading…
+              } @else {
+                <span class="material-symbols-outlined">add_shopping_cart</span> Add to Store
+              }
+            </button>
+          </div>
+        </div>
+
+        <!-- Products list -->
+        @if (merch().length === 0) {
+          <div class="text-center py-20 opacity-30">
+            <span class="material-symbols-outlined text-6xl">checkroom</span>
+            <p class="font-bold mt-2">No products yet</p>
+          </div>
+        } @else {
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            @for (item of merch(); track item.id) {
+              <div class="card bg-base-200 overflow-hidden" [class.opacity-50]="!item.inStock">
+                @if (editingMerchId() === item.id) {
+                  <div class="card-body p-4 gap-3">
+                    <input class="input input-sm rounded-full w-full" type="text" [(ngModel)]="editMerchDraft['name']" placeholder="Name" />
+                    <input class="input input-sm rounded-full w-full" type="number" [(ngModel)]="editMerchDraft['price']" placeholder="Price" />
+                    <input class="input input-sm rounded-full w-full" type="url" [(ngModel)]="editMerchDraft['image']" placeholder="Image URL" />
+                    <select class="select select-sm select-bordered rounded-full w-full" [(ngModel)]="editMerchDraft['category']">
+                      <option value="shirt">Shirt</option>
+                      <option value="hoodie">Hoodie</option>
+                      <option value="accessory">Accessory</option>
+                      <option value="other">Other</option>
+                    </select>
+                    <div class="flex gap-2 mt-1">
+                      <button class="btn btn-primary btn-sm rounded-full flex-1" (click)="saveEditMerch(item.id)">Save</button>
+                      <button class="btn btn-ghost btn-sm rounded-full" (click)="editingMerchId.set(null)">Cancel</button>
+                    </div>
+                  </div>
+                } @else {
+                  @if (item.image) {
+                    <figure class="aspect-[3/4] overflow-hidden">
+                      <img [src]="item.image" [alt]="item.name" class="w-full h-full object-cover" />
+                    </figure>
+                  } @else {
+                    <div class="aspect-[3/4] bg-base-300 flex items-center justify-center">
+                      <span class="material-symbols-outlined text-5xl opacity-20">checkroom</span>
+                    </div>
+                  }
+                  <div class="card-body p-4 gap-2">
+                    <div class="flex items-start justify-between gap-2">
+                      <div>
+                        <p class="font-black text-sm leading-tight">{{ item.name }}</p>
+                        <p class="text-primary font-bold">${{ item.price }}</p>
+                      </div>
+                      <div class="badge badge-sm rounded-full font-bold"
+                           [class.badge-success]="item.inStock" [class.badge-error]="!item.inStock">
+                        {{ item.inStock ? 'In Stock' : 'Out' }}
+                      </div>
+                    </div>
+                    <div class="flex gap-1 mt-1">
+                      <button class="btn btn-ghost btn-xs rounded-full flex-1" (click)="startEditMerch(item)">
+                        <span class="material-symbols-outlined text-sm">edit</span>
+                      </button>
+                      <button class="btn btn-ghost btn-xs rounded-full flex-1" (click)="toggleStock(item.id)"
+                              [title]="item.inStock ? 'Mark out of stock' : 'Mark in stock'">
+                        <span class="material-symbols-outlined text-sm">{{ item.inStock ? 'remove_shopping_cart' : 'add_shopping_cart' }}</span>
+                      </button>
+                      <button class="btn btn-ghost btn-xs rounded-full flex-1 text-error" (click)="removeMerch(item.id)">
+                        <span class="material-symbols-outlined text-sm">delete</span>
+                      </button>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+
+    <!-- ════════════════════════════════════
+         TAB 3 — SERMONS & WORSHIP
+    ════════════════════════════════════ -->
+    @if (activeTab() === 'media') {
+      <div class="flex flex-col gap-8">
+
+        <div class="card bg-base-200">
+          <div class="card-body p-6 gap-5">
+            <h2 class="display text-3xl tracking-widest">Add Sermon or Worship</h2>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <fieldset class="fieldset gap-1">
+                <legend class="fieldset-legend text-xs uppercase tracking-wider opacity-40">Title *</legend>
+                <label class="input rounded-full w-full">
+                  <span class="material-symbols-outlined opacity-40 text-sm">title</span>
+                  <input type="text" placeholder="Lion and the Lamb" [(ngModel)]="newMedia.title" name="mdTitle" />
+                </label>
+              </fieldset>
+              <fieldset class="fieldset gap-1">
+                <legend class="fieldset-legend text-xs uppercase tracking-wider opacity-40">Minister / Artist</legend>
+                <label class="input rounded-full w-full">
+                  <span class="material-symbols-outlined opacity-40 text-sm">person</span>
+                  <input type="text" placeholder="Pastor James" [(ngModel)]="newMedia.minister" name="mdMinister" />
+                </label>
+              </fieldset>
+              <fieldset class="fieldset gap-1">
+                <legend class="fieldset-legend text-xs uppercase tracking-wider opacity-40">Type</legend>
+                <select class="select select-bordered rounded-full w-full" [(ngModel)]="newMedia.type" name="mdType">
+                  <option value="sermon">Sermon</option>
+                  <option value="worship">Worship</option>
+                </select>
+              </fieldset>
+              <fieldset class="fieldset gap-1">
+                <legend class="fieldset-legend text-xs uppercase tracking-wider opacity-40">Duration (e.g. 42:30)</legend>
+                <label class="input rounded-full w-full">
+                  <span class="material-symbols-outlined opacity-40 text-sm">timer</span>
+                  <input type="text" placeholder="42:30" [(ngModel)]="newMedia.duration" name="mdDur" />
+                </label>
+              </fieldset>
+              <fieldset class="fieldset gap-1">
+                <legend class="fieldset-legend text-xs uppercase tracking-wider opacity-40">Publish Date</legend>
+                <label class="input rounded-full w-full">
+                  <span class="material-symbols-outlined opacity-40 text-sm">calendar_today</span>
+                  <input type="date" [(ngModel)]="newMedia.publishedAt" name="mdDate" />
+                </label>
+              </fieldset>
+            </div>
+
+            <!-- ── MEDIA SOURCE: URL or Upload ── -->
+            <div class="flex flex-col gap-3">
+              <div class="flex items-center justify-between">
+                <p class="text-xs font-bold uppercase tracking-wider opacity-40">Audio / Video Source *</p>
+                <div class="join rounded-full overflow-hidden border border-base-content/10">
+                  <button class="btn btn-xs join-item rounded-none font-bold px-4"
+                          [class.btn-primary]="mediaSourceMode() === 'url'"
+                          [class.btn-ghost]="mediaSourceMode() !== 'url'"
+                          (click)="mediaSourceMode.set('url'); clearMediaFile()">
+                    <span class="material-symbols-outlined text-sm">link</span> External URL
+                  </button>
+                  <button class="btn btn-xs join-item rounded-none font-bold px-4"
+                          [class.btn-primary]="mediaSourceMode() === 'upload'"
+                          [class.btn-ghost]="mediaSourceMode() !== 'upload'"
+                          (click)="mediaSourceMode.set('upload')">
+                    <span class="material-symbols-outlined text-sm">upload_file</span> Upload File
+                  </button>
+                </div>
+              </div>
+
+              @if (mediaSourceMode() === 'url') {
+                <label class="input rounded-full w-full">
+                  <span class="material-symbols-outlined opacity-40 text-sm">link</span>
+                  <input type="url" placeholder="YouTube, SoundCloud, or any audio/video URL"
+                         [(ngModel)]="newMedia.embedUrl" name="mdEmbed" />
+                </label>
+                <p class="text-xs opacity-40 pl-4">Works with YouTube, SoundCloud, Spotify, direct MP3/MP4 links.</p>
+              } @else {
+                @if (!mediaFile()) {
+                  <<div
+                  class="border-2 border-dashed rounded-box p-10 text-center cursor-pointer transition-colors"
+                  [class.border-primary]="mediaDragOver()"
+                  [class.bg-primary/5]="mediaDragOver()"
+                  [class.border-base-content/20]="!mediaDragOver()"
+                  (dragover)="$event.preventDefault(); mediaDragOver.set(true)"
+                  (dragleave)="mediaDragOver.set(false)"
+                  (drop)="onMediaFileDrop($event)"
+                  (click)="mediaFileInput.click()">
+                  <span class="material-symbols-outlined text-5xl opacity-30 mb-2 block">audio_file</span>
+                  <p class="font-semibold opacity-60">Drag &amp; drop your audio or video file here</p>
+                  <p class="text-xs opacity-40 mt-1">or click to browse</p>
+                  <p class="text-xs opacity-30 mt-1">MP3, WAV, MP4, MOV, AVI supported</p>
+                  <input #mediaFileInput type="file" accept="audio/*,video/*" class="hidden"
+                        (change)="onMediaFileInput(mediaFileInput.files)" />
+                </div>
+                } @else {
+                  <div class="flex items-center gap-4 p-4 bg-base-300 rounded-box">
+                    <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                      <span class="material-symbols-outlined text-primary text-2xl">
+                        {{ mediaFile()!.type.startsWith('audio/') ? 'audio_file' : 'video_file' }}
+                      </span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                      <p class="font-bold text-sm truncate">{{ mediaFile()!.name }}</p>
+                      <p class="text-xs opacity-50">{{ formatFileSize(mediaFile()!.size) }}</p>
+                      @if (mediaUploading()) {
+                        <progress class="progress progress-primary w-full mt-2 h-1"
+                                  [value]="mediaUploadProgress()" max="100"></progress>
+                        <p class="text-xs opacity-50 mt-1">Uploading {{ mediaUploadProgress() }}%…</p>
+                      }
+                    </div>
+                    <button class="btn btn-ghost btn-sm btn-circle shrink-0" (click)="clearMediaFile()"
+                            [disabled]="mediaUploading()">
+                      <span class="material-symbols-outlined text-base">close</span>
+                    </button>
+                  </div>
+                  <!-- Video preview -->
+                  @if (mediaFilePreview()) {
+                    <video [src]="mediaFilePreview()" controls class="w-full rounded-box max-h-40 mt-1"></video>
+                  }
+                }
+              }
+            </div>
+
+            <!-- ── THUMBNAIL: URL or Upload ── -->
+            <div class="flex flex-col gap-3">
+              <div class="flex items-center justify-between">
+                <p class="text-xs font-bold uppercase tracking-wider opacity-40">Thumbnail (optional)</p>
+                <div class="join rounded-full overflow-hidden border border-base-content/10">
+                  <button class="btn btn-xs join-item rounded-none font-bold px-4"
+                          [class.btn-primary]="thumbMode() === 'url'"
+                          [class.btn-ghost]="thumbMode() !== 'url'"
+                          (click)="thumbMode.set('url'); clearThumb()">
+                    <span class="material-symbols-outlined text-sm">link</span> URL
+                  </button>
+                  <button class="btn btn-xs join-item rounded-none font-bold px-4"
+                          [class.btn-primary]="thumbMode() === 'upload'"
+                          [class.btn-ghost]="thumbMode() !== 'upload'"
+                          (click)="thumbMode.set('upload')">
+                    <span class="material-symbols-outlined text-sm">upload</span> Upload
+                  </button>
+                </div>
+              </div>
+
+              @if (thumbMode() === 'url') {
+                <label class="input rounded-full w-full">
+                  <span class="material-symbols-outlined opacity-40 text-sm">image</span>
+                  <input type="url" placeholder="https://... thumbnail image" [(ngModel)]="newMedia.thumbnail" name="mdThumb" />
+                </label>
+              } @else {
+                @if (!thumbFile()) {
+                 <div (click)="thumbInput.click()">
+  <input #thumbInput type="file" accept="image/*" class="hidden"
+         (change)="onThumbInput(thumbInput.files)" />
+</div>
+
+                } @else {
+                  <div class="flex items-center gap-3 p-3 bg-base-300 rounded-box">
+                    <img [src]="thumbPreview()" alt="thumb" class="w-14 h-10 object-cover rounded-box shrink-0" />
+                    <div class="flex-1 min-w-0">
+                      <p class="font-bold text-xs truncate">{{ thumbFile()!.name }}</p>
+                      @if (thumbUploading()) {
+                        <progress class="progress progress-primary w-full mt-1 h-1"
+                                  [value]="thumbProgress()" max="100"></progress>
+                      }
+                    </div>
+                    <button class="btn btn-ghost btn-xs btn-circle" (click)="clearThumb()">
+                      <span class="material-symbols-outlined text-sm">close</span>
+                    </button>
+                  </div>
+                }
+              }
+            </div>
+
+            <button class="btn btn-primary rounded-full font-bold w-full shadow-lg shadow-primary/20"
+                    (click)="addMedia()"
+                    [disabled]="!newMedia.title || mediaUploading() || thumbUploading() ||
+                                (mediaSourceMode() === 'url' && !newMedia.embedUrl) ||
+                                (mediaSourceMode() === 'upload' && !mediaFile())">
+              @if (mediaUploading() || thumbUploading()) {
+                <span class="loading loading-spinner loading-sm"></span> Uploading…
+              } @else {
+                <span class="material-symbols-outlined">upload</span> Publish Media
+              }
+            </button>
+          </div>
+        </div>
+
+        <!-- Media list -->
+        @if (media().length === 0) {
+          <div class="text-center py-20 opacity-30">
+            <span class="material-symbols-outlined text-6xl">play_circle</span>
+            <p class="font-bold mt-2">No media yet</p>
+          </div>
+        } @else {
+          <div class="flex flex-col gap-4">
+            @for (item of media(); track item.id) {
+              <div class="card bg-base-200">
+                @if (editingMediaId() === item.id) {
+                  <div class="card-body p-5 gap-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <input class="input input-sm rounded-full" type="text" [(ngModel)]="editMediaDraft['title']" placeholder="Title" />
+                      <input class="input input-sm rounded-full" type="text" [(ngModel)]="editMediaDraft['minister']" placeholder="Minister" />
+                      <input class="input input-sm rounded-full" type="text" [(ngModel)]="editMediaDraft['duration']" placeholder="Duration" />
+                      <select class="select select-sm select-bordered rounded-full" [(ngModel)]="editMediaDraft['type']">
+                        <option value="sermon">Sermon</option>
+                        <option value="worship">Worship</option>
+                      </select>
+                      <input class="input input-sm rounded-full col-span-full" type="url" [(ngModel)]="editMediaDraft['embedUrl']" placeholder="URL" />
+                      <input class="input input-sm rounded-full col-span-full" type="url" [(ngModel)]="editMediaDraft['thumbnail']" placeholder="Thumbnail URL" />
+                    </div>
+                    <div class="flex gap-2">
+                      <button class="btn btn-primary btn-sm rounded-full flex-1" (click)="saveEditMedia(item.id)">Save</button>
+                      <button class="btn btn-ghost btn-sm rounded-full" (click)="editingMediaId.set(null)">Cancel</button>
+                    </div>
+                  </div>
+                } @else {
+                  <div class="card-body flex-row items-center gap-4 p-4">
+                    @if (item.thumbnail) {
+                      <img [src]="item.thumbnail" [alt]="item.title" class="w-20 h-14 object-cover rounded-box shrink-0" />
+                    } @else {
+                      <div class="w-20 h-14 rounded-box bg-base-300 flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined opacity-30">play_circle</span>
+                      </div>
+                    }
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center gap-2 mb-1">
+                        <div class="badge badge-sm rounded-full font-bold"
+                             [class.badge-primary]="item.type === 'sermon'"
+                             [class.badge-secondary]="item.type === 'worship'">
+                          {{ item.type }}
+                        </div>
+                        @if (item.storagePath) {
+                          <div class="badge badge-xs badge-ghost rounded-full">uploaded</div>
+                        }
+                        <span class="text-xs opacity-40">{{ item.publishedAt }}</span>
+                      </div>
+                      <p class="font-black text-sm leading-tight truncate">{{ item.title }}</p>
+                      <p class="text-xs opacity-50">{{ item.minister }} · {{ item.duration }}</p>
+                    </div>
+                    <div class="flex gap-1 shrink-0">
+                      <button class="btn btn-ghost btn-sm btn-circle" (click)="startEditMedia(item)">
+                        <span class="material-symbols-outlined text-base">edit</span>
+                      </button>
+                      <button class="btn btn-ghost btn-sm btn-circle text-error" (click)="removeMedia(item.id)">
+                        <span class="material-symbols-outlined text-base">delete</span>
+                      </button>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+
+    <!-- ════════════════════════════════════
+         TAB 4 — EVENTS
+    ════════════════════════════════════ -->
+    @if (activeTab() === 'events') {
+      <div class="flex flex-col gap-8">
+
+        <div class="card bg-base-200">
+          <div class="card-body p-6 gap-4">
+            <h2 class="display text-3xl tracking-widest">Add Event</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <fieldset class="fieldset gap-1 col-span-full sm:col-span-1">
+                <legend class="fieldset-legend text-xs uppercase tracking-wider opacity-40">Event Title *</legend>
+                <label class="input rounded-full w-full">
+                  <span class="material-symbols-outlined opacity-40 text-sm">event</span>
+                  <input type="text" placeholder="City Campus Outreach" [(ngModel)]="newEvent.title" name="evTitle" />
+                </label>
+              </fieldset>
+              <fieldset class="fieldset gap-1">
+                <legend class="fieldset-legend text-xs uppercase tracking-wider opacity-40">Type</legend>
+                <select class="select select-bordered rounded-full w-full" [(ngModel)]="newEvent.type" name="evType">
+                  <option value="outreach">Outreach</option>
+                  <option value="worship">Worship Night</option>
+                  <option value="prayer">Prayer</option>
+                  <option value="other">Other</option>
+                </select>
+              </fieldset>
+              <fieldset class="fieldset gap-1">
+                <legend class="fieldset-legend text-xs uppercase tracking-wider opacity-40">Date *</legend>
+                <label class="input rounded-full w-full">
+                  <span class="material-symbols-outlined opacity-40 text-sm">calendar_today</span>
+                  <input type="date" [(ngModel)]="newEvent.date" name="evDate" />
+                </label>
+              </fieldset>
+              <fieldset class="fieldset gap-1">
+                <legend class="fieldset-legend text-xs uppercase tracking-wider opacity-40">Time</legend>
+                <label class="input rounded-full w-full">
+                  <span class="material-symbols-outlined opacity-40 text-sm">schedule</span>
+                  <input type="time" [(ngModel)]="newEvent.time" name="evTime" />
+                </label>
+              </fieldset>
+              <fieldset class="fieldset gap-1 col-span-full">
+                <legend class="fieldset-legend text-xs uppercase tracking-wider opacity-40">Location</legend>
+                <label class="input rounded-full w-full">
+                  <span class="material-symbols-outlined opacity-40 text-sm">location_on</span>
+                  <input type="text" placeholder="Kampala, Uganda" [(ngModel)]="newEvent.location" name="evLoc" />
+                </label>
+              </fieldset>
+              <fieldset class="fieldset gap-1 col-span-full">
+                <legend class="fieldset-legend text-xs uppercase tracking-wider opacity-40">Description</legend>
+                <textarea class="textarea textarea-bordered rounded-2xl w-full resize-none" rows="3"
+                          placeholder="What's happening at this event..."
+                          [(ngModel)]="newEvent.description" name="evDesc"></textarea>
+              </fieldset>
+            </div>
+            <button class="btn btn-primary rounded-full font-bold w-full mt-2 shadow-lg shadow-primary/20"
+                    (click)="addEvent()" [disabled]="!newEvent.title || !newEvent.date">
+              <span class="material-symbols-outlined">add_circle</span> Add to Calendar
+            </button>
+          </div>
+        </div>
+
+        @if (events().length === 0) {
+          <div class="text-center py-20 opacity-30">
+            <span class="material-symbols-outlined text-6xl">calendar_month</span>
+            <p class="font-bold mt-2">No events yet</p>
+          </div>
+        } @else {
+          <div class="flex flex-col gap-4">
+            @for (event of events(); track event.id) {
+              <div class="card bg-base-200">
+                @if (editingEventId() === event.id) {
+                  <div class="card-body p-5 gap-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <input class="input input-sm rounded-full col-span-full" type="text" [(ngModel)]="editEventDraft['title']" placeholder="Title" />
+                      <input class="input input-sm rounded-full" type="date" [(ngModel)]="editEventDraft['date']" />
+                      <input class="input input-sm rounded-full" type="time" [(ngModel)]="editEventDraft['time']" />
+                      <input class="input input-sm rounded-full col-span-full" type="text" [(ngModel)]="editEventDraft['location']" placeholder="Location" />
+                      <select class="select select-sm select-bordered rounded-full" [(ngModel)]="editEventDraft['type']">
+                        <option value="outreach">Outreach</option>
+                        <option value="worship">Worship Night</option>
+                        <option value="prayer">Prayer</option>
+                        <option value="other">Other</option>
+                      </select>
+                      <textarea class="textarea textarea-bordered rounded-2xl col-span-full resize-none" rows="2"
+                                [(ngModel)]="editEventDraft['description']" placeholder="Description"></textarea>
+                    </div>
+                    <div class="flex gap-2">
+                      <button class="btn btn-primary btn-sm rounded-full flex-1" (click)="saveEditEvent(event.id)">Save</button>
+                      <button class="btn btn-ghost btn-sm rounded-full" (click)="editingEventId.set(null)">Cancel</button>
+                    </div>
+                  </div>
+                } @else {
+                  <div class="card-body flex-row items-center gap-4 p-4">
+                    <div class="w-14 shrink-0 rounded-box bg-primary/10 flex flex-col items-center justify-center py-2 text-center">
+                      <p class="text-primary font-black text-lg leading-none display">{{ event.date | slice:8:10 }}</p>
+                      <p class="text-primary text-xs font-bold uppercase opacity-70">{{ event.date | slice:5:7 }}</p>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center gap-2 mb-1">
+                        <div class="badge badge-sm rounded-full font-bold {{ eventTypeBadge(event.type) }}">{{ event.type }}</div>
+                        @if (event.time) { <span class="text-xs opacity-40">{{ event.time }}</span> }
+                      </div>
+                      <p class="font-black text-sm leading-tight">{{ event.title }}</p>
+                      @if (event.location) {
+                        <p class="text-xs opacity-50 flex items-center gap-1 mt-0.5">
+                          <span class="material-symbols-outlined text-xs">location_on</span> {{ event.location }}
+                        </p>
+                      }
+                    </div>
+                    <div class="flex gap-1 shrink-0">
+                      <button class="btn btn-ghost btn-sm btn-circle" (click)="startEditEvent(event)">
+                        <span class="material-symbols-outlined text-base">edit</span>
+                      </button>
+                      <button class="btn btn-ghost btn-sm btn-circle text-error" (click)="removeEvent(event.id)">
+                        <span class="material-symbols-outlined text-base">delete</span>
+                      </button>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+
+  </div>
+</div>

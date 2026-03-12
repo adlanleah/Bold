@@ -1,0 +1,392 @@
+<div class="min-h-screen bg-base-100 text-base-content">
+
+  <!-- ── NAVBAR (matches home) ── -->
+  <div class="drawer">
+    <input id="about-drawer" type="checkbox" class="drawer-toggle" />
+
+    <div class="drawer-content flex flex-col">
+
+      <header class="navbar sticky top-0 z-50 bg-base-100/80 backdrop-blur-md border-b border-base-300 px-4 md:px-10">
+        <div class="navbar-start">
+          <label for="about-drawer" class="btn btn-ghost btn-circle drawer-button lg:hidden">
+            <span class="material-symbols-outlined">menu</span>
+          </label>
+          <a routerLink="/" class="flex items-center gap-3 ml-2 lg:ml-0">
+            <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-content">
+              <span class="material-symbols-outlined">auto_awesome</span>
+            </div>
+            <span class="font-black text-xl uppercase tracking-tight display">I AM BOLD</span>
+          </a>
+        </div>
+
+        <div class="navbar-center hidden lg:flex">
+          <ul class="menu menu-horizontal gap-1 font-semibold text-sm">
+            <li><a routerLink="/" class="rounded-full">Home</a></li>
+            <li><a routerLink="/join" class="rounded-full">Join</a></li>
+            <li><a routerLink="/about" class="rounded-full text-secondary font-bold">About</a></li>
+            <li><a routerLink="/worship" class="rounded-full">Worship</a></li>
+            <li><a routerLink="/wear" class="rounded-full" >Wear &amp; Share</a></li>
+            <li><a routerLink="/events" class="rounded-full">Events</a></li>
+            <li><a routerLink="/give" class="rounded-full">Give</a></li>
+          </ul>
+        </div>
+
+        <div class="navbar-end gap-3">
+          <a routerLink="/join" class="btn btn-primary btn-sm rounded-full font-bold tracking-wide shadow-lg">Join Now</a>
+        </div>
+      </header>
+
+      <main>
+
+        <!-- ── HERO ── -->
+        <section class="relative w-full overflow-hidden" style="min-height: 560px;">
+          <div
+            class="absolute inset-0 bg-cover bg-center"
+            style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCWbW7ToqJIwMb8mrlnkRxS14cqvo-6T2CcsLN4wPYqRYGDrZKXV--HBngHjp2QzXFD-76BLKVXSjUS1Kt2UU4LPITi9pcwFHOrCkIHAFFEr9jcAMXWQaTXJw7rqM8I_deMjHDVmLuP9t1YSV9vL0pagGkvVNpJAw8Q67SjKYDX2uVsFPDsDIZn6akOUnh6O0LlGv8k3qjbR0c0HZmrM_n2p0dfC1bxGJgRpd5PU4Gpq9eGr_L44aS6X1ME9HbFOCCXNqo4f32_G4Q');">
+          </div>
+          <div class="absolute inset-0" style="background: linear-gradient(to right, oklch(20% 0.042 265.755) 35%, rgba(106,13,173,0.15) 100%);"></div>
+
+          <div class="relative max-w-[1200px] mx-auto px-6 md:px-10 flex items-center" style="min-height: 560px;">
+            <div class="max-w-2xl flex flex-col gap-6 py-20">
+              <div class="flex items-center gap-3">
+                <span class="h-px w-10 bg-secondary inline-block"></span>
+                <span class="text-secondary font-bold uppercase tracking-[0.2em] text-xs">Launched in 2026</span>
+              </div>
+              <h1 class="display text-6xl md:text-8xl text-white leading-[0.95]">
+                About the<br/>Movement
+              </h1>
+              <p class="text-white/75 text-lg md:text-xl leading-relaxed max-w-xl">
+                A global movement focused on leading nations to Christ through public faith declaration, worship, and bold evangelism.
+              </p>
+              <div class="flex flex-wrap gap-3 mt-2">
+                <a routerLink="/join" class="btn btn-primary rounded-full font-bold min-w-[160px]">
+                  Join the Movement
+                </a>
+                <a routerLink="/give" class="btn btn-outline rounded-full font-bold border-white/30 text-white hover:bg-white/10 hover:border-white/30 min-w-[160px]">
+                  Partner With Us
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── VISION & MISSION ── -->
+        <section class="max-w-[1200px] mx-auto px-6 md:px-10 py-24">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <div class="card bg-base-200 border-l-4 border-secondary overflow-hidden relative">
+              <div class="absolute top-0 right-0 w-40 h-40 rounded-full bg-secondary/5 -translate-y-1/2 translate-x-1/2"></div>
+              <div class="card-body gap-4 p-8">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-secondary">visibility</span>
+                  </div>
+                  <h2 class="display text-3xl tracking-widest">Vision</h2>
+                </div>
+                <p class="text-xl font-semibold leading-relaxed opacity-90">
+                  To reach communities across the world with Christ.
+                </p>
+              </div>
+            </div>
+
+            <div class="card bg-base-200 border-l-4 border-primary overflow-hidden relative">
+              <div class="absolute top-0 right-0 w-40 h-40 rounded-full bg-primary/5 -translate-y-1/2 translate-x-1/2"></div>
+              <div class="card-body gap-4 p-8">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-primary">rocket_launch</span>
+                  </div>
+                  <h2 class="display text-3xl tracking-widest">Mission</h2>
+                </div>
+                <p class="text-xl font-semibold leading-relaxed opacity-90">
+                  To live unashamed, speak the Gospel with love and boldness.
+                </p>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ── OUR CULTURE ── -->
+        <section class="w-full bg-base-200 py-24">
+          <div class="max-w-[1200px] mx-auto px-6 md:px-10">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+              <div>
+                <span class="text-secondary font-bold uppercase tracking-widest text-xs">How We Live</span>
+                <h2 class="display text-5xl md:text-6xl mt-2">Our Culture</h2>
+              </div>
+              <p class="text-base-content/60 max-w-sm text-right hidden md:block">
+                Faith isn't just what you believe — it's how you walk, talk, and show up every single day.
+              </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div class="card bg-base-100 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1 transition-all duration-300 group">
+                <div class="card-body gap-5 p-8">
+                  <div class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                    <span class="material-symbols-outlined text-primary text-4xl">checkroom</span>
+                  </div>
+                  <div>
+                    <h3 class="display text-3xl text-primary tracking-widest mb-2">Wear</h3>
+                    <p class="opacity-70 leading-relaxed">Be a walking testimony. Every piece of gear is a conversation waiting to happen — wear your faith with pride.</p>
+                  </div>
+                  <a routerLink="/shop" class="btn btn-ghost btn-sm rounded-full self-start px-0 text-secondary gap-1 hover:gap-2 transition-all">
+                    Shop now <span class="material-symbols-outlined text-base">arrow_forward</span>
+                  </a>
+                </div>
+              </div>
+
+              <div class="card bg-primary text-primary-content hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-1 transition-all duration-300 group">
+                <div class="card-body gap-5 p-8">
+                  <div class="w-16 h-16 rounded-2xl bg-primary-content/10 flex items-center justify-center group-hover:bg-primary-content/20 transition-colors">
+                    <span class="material-symbols-outlined text-primary-content text-4xl">campaign</span>
+                  </div>
+                  <div>
+                    <h3 class="display text-3xl tracking-widest mb-2">Share</h3>
+                    <p class="opacity-80 leading-relaxed">The Gospel is meant to be spoken. Don't keep it to yourself — share the Good News with everyone around you.</p>
+                  </div>
+                  <a routerLink="/join" class="btn btn-ghost btn-sm rounded-full self-start px-0 text-secondary gap-1 hover:gap-2 transition-all">
+                    Get resources <span class="material-symbols-outlined text-base">arrow_forward</span>
+                  </a>
+                </div>
+              </div>
+
+              <div class="card bg-base-100 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1 transition-all duration-300 group">
+                <div class="card-body gap-5 p-8">
+                  <div class="w-16 h-16 rounded-2xl bg-secondary/10 flex items-center justify-center group-hover:bg-secondary/20 transition-colors">
+                    <span class="material-symbols-outlined text-secondary text-4xl">favorite</span>
+                  </div>
+                  <div>
+                    <h3 class="display text-3xl text-primary tracking-widest mb-2">Live</h3>
+                    <p class="opacity-70 leading-relaxed">Let your lifestyle reflect the character of Jesus — in how you speak, serve, love, and show up for others.</p>
+                  </div>
+                  <a routerLink="/about" class="btn btn-ghost btn-sm rounded-full self-start px-0 text-secondary gap-1 hover:gap-2 transition-all">
+                    Learn more <span class="material-symbols-outlined text-base">arrow_forward</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── WHAT WE BELIEVE ── -->
+        <section class="max-w-[1200px] mx-auto px-6 md:px-10 py-24">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+
+            <div class="flex flex-col gap-8">
+              <div>
+                <span class="text-secondary font-bold uppercase tracking-widest text-xs">Our Foundation</span>
+                <h2 class="display text-5xl md:text-6xl mt-2">What We<br/>Believe</h2>
+              </div>
+              <div class="flex flex-col gap-4">
+                <div class="flex items-start gap-4">
+                  <div class="w-12 h-12 shrink-0 rounded-full bg-primary/10 flex items-center justify-center mt-1">
+                    <span class="material-symbols-outlined text-primary">menu_book</span>
+                  </div>
+                  <div>
+                    <h4 class="font-black text-lg uppercase tracking-wide text-primary">The Word</h4>
+                    <p class="opacity-70 leading-relaxed">Scripture is alive, powerful, and our ultimate guide for all of life and faith.</p>
+                  </div>
+                </div>
+                <div class="divider my-0 opacity-20"></div>
+                <div class="flex items-start gap-4">
+                  <div class="w-12 h-12 shrink-0 rounded-full bg-secondary/10 flex items-center justify-center mt-1">
+                    <span class="material-symbols-outlined text-secondary">self_improvement</span>
+                  </div>
+                  <div>
+                    <h4 class="font-black text-lg uppercase tracking-wide text-primary">Prayer</h4>
+                    <p class="opacity-70 leading-relaxed">Constant communion with God is what fuels boldness and transforms lives.</p>
+                  </div>
+                </div>
+                <div class="divider my-0 opacity-20"></div>
+                <div class="flex items-start gap-4">
+                  <div class="w-12 h-12 shrink-0 rounded-full bg-accent/10 flex items-center justify-center mt-1">
+                    <span class="material-symbols-outlined text-accent">groups</span>
+                  </div>
+                  <div>
+                    <h4 class="font-black text-lg uppercase tracking-wide text-primary">Community</h4>
+                    <p class="opacity-70 leading-relaxed">Iron sharpens iron — we grow stronger, bolder, and deeper together.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Scripture pullquote -->
+            <div class="relative">
+              <div class="absolute -top-6 -left-6 display text-[10rem] text-primary/10 leading-none select-none">"</div>
+              <div class="card bg-base-200 relative z-10">
+                <div class="card-body p-10 gap-6">
+                  <p class="text-xl md:text-2xl italic leading-relaxed opacity-80">
+                    For I am not ashamed of the gospel, because it is the power of God that brings salvation to everyone who believes.
+                  </p>
+                  <div class="flex items-center gap-4 pt-2">
+                    <span class="h-px flex-1 bg-base-content/20"></span>
+                    <p class="font-black text-primary display text-xl tracking-widest">Romans 1:16</p>
+                  </div>
+                </div>
+              </div>
+              <div class="absolute -bottom-6 -right-6 display text-[10rem] text-primary/10 leading-none select-none rotate-180">"</div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ── JOURNEY TIMELINE ── -->
+        <section class="w-full bg-base-200 py-24">
+          <div class="max-w-[1200px] mx-auto px-6 md:px-10">
+            <div class="text-center mb-16">
+              <span class="text-secondary font-bold uppercase tracking-widest text-xs">The Road to Launch</span>
+              <h2 class="display text-5xl md:text-6xl mt-2">Our Journey</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-0 relative">
+              <div class="absolute top-8 left-[12.5%] right-[12.5%] h-px bg-primary/20 hidden md:block"></div>
+
+              @for (item of timeline; track item.date) {
+                <div class="flex flex-col items-center text-center gap-4 relative px-4 py-6">
+                  <div
+                    class="w-16 h-16 rounded-full flex items-center justify-center z-10 shadow-lg"
+                    [class.bg-primary]="item.active"
+                    [class.text-primary-content]="item.active"
+                    [class.bg-base-100]="!item.active"
+                    [class.text-primary]="!item.active"
+                    [class.border]="!item.active"
+                    [class.border-primary]="!item.active"
+                  >
+                    <span class="material-symbols-outlined text-2xl">{{ item.active ? 'stars' : 'radio_button_checked' }}</span>
+                  </div>
+                  <div>
+                    <p class="text-secondary font-bold text-sm uppercase tracking-wider">{{ item.date }}</p>
+                    <h4 class="font-black text-base mt-1">{{ item.title }}</h4>
+                    <p class="text-xs opacity-60 mt-1 leading-relaxed">{{ item.description }}</p>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </section>
+
+        <!-- ── LAUNCH GOALS ── -->
+        <section class="max-w-[1200px] mx-auto px-6 md:px-10 py-20">
+          <div class="text-center mb-10">
+            <span class="text-secondary font-bold uppercase tracking-widest text-xs">What We're Believing For</span>
+            <h2 class="display text-4xl md:text-5xl mt-2">Our 2026 Goals</h2>
+          </div>
+          <div class="stats stats-vertical lg:stats-horizontal shadow w-full bg-base-200 rounded-box">
+            <div class="stat text-center">
+              <div class="stat-title text-secondary font-bold uppercase tracking-widest text-xs">Members by Year End</div>
+              <div class="stat-value text-primary display">1,000</div>
+              <div class="stat-desc opacity-60">Registered believers</div>
+            </div>
+            <div class="stat text-center">
+              <div class="stat-title text-secondary font-bold uppercase tracking-widest text-xs">People Impacted</div>
+              <div class="stat-value text-primary display">100,000</div>
+              <div class="stat-desc opacity-60">Reached in year one</div>
+            </div>
+            <div class="stat text-center">
+              <div class="stat-title text-secondary font-bold uppercase tracking-widest text-xs">Outreach Events</div>
+              <div class="stat-value text-primary display">52</div>
+              <div class="stat-desc opacity-60">One every week</div>
+            </div>
+            <div class="stat text-center">
+              <div class="stat-title text-secondary font-bold uppercase tracking-widest text-xs">Lives Changed</div>
+              <div class="stat-value text-primary display">∞</div>
+              <div class="stat-desc opacity-60">By His grace alone</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── CTA BANNER ── -->
+        <section class="px-6 md:px-10 pb-24">
+          <div class="max-w-[1200px] mx-auto">
+            <div
+              class="rounded-box overflow-hidden relative"
+              style="background: linear-gradient(135deg, #6A0DAD 0%, #3d0670 60%, oklch(20% 0.042 265.755) 100%);">
+              <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle at 20% 50%, #7DE2B8 0%, transparent 50%), radial-gradient(circle at 80% 50%, #FFD700 0%, transparent 50%);"></div>
+              <div class="relative px-8 md:px-16 py-16 flex flex-col md:flex-row items-center justify-between gap-10">
+                <div class="flex flex-col gap-4 max-w-lg">
+                  <h2 class="display text-4xl md:text-5xl text-white leading-tight">
+                    Ready to Stand Bold?
+                  </h2>
+                  <p class="text-white/70 text-lg leading-relaxed">
+                    Be part of something bigger than yourself. Stand bold, live loud, and share His love with the world.
+                  </p>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-3 shrink-0">
+                  <a routerLink="/join" class="btn btn-secondary rounded-full font-bold text-base-100 min-w-[160px] shadow-lg">
+                    <span class="material-symbols-outlined">group_add</span>
+                    Join Now
+                  </a>
+                  <a routerLink="/give" class="btn btn-ghost rounded-full font-bold border border-white/30 text-white hover:bg-white/10 hover:border-white/30 min-w-[160px]">
+                    <span class="material-symbols-outlined">volunteer_activism</span>
+                    Give &amp; Partner
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+
+      <!-- ── FOOTER ── -->
+      <footer class="bg-primary text-primary-content pt-16 pb-8">
+        <div class="max-w-[1200px] mx-auto px-6 md:px-10 flex flex-col gap-12">
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-10">
+            <div class="md:col-span-1 flex flex-col gap-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
+                  <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">auto_awesome</span>
+                </div>
+                <span class="display text-2xl tracking-widest">I AM BOLD</span>
+              </div>
+              <p class="text-sm opacity-60 leading-relaxed">A movement for the bold, the brave, and the unashamed.</p>
+            </div>
+            <div class="flex flex-col gap-3">
+              <p class="font-black text-sm uppercase tracking-wider opacity-40">Movement</p>
+              <a routerLink="/about" class="text-sm opacity-60 hover:opacity-100 transition-opacity">About</a>
+              <a routerLink="/join" class="text-sm opacity-60 hover:opacity-100 transition-opacity">Join Us</a>
+              <a routerLink="/give" class="text-sm opacity-60 hover:opacity-100 transition-opacity">Give</a>
+            </div>
+            <div class="flex flex-col gap-3">
+              <p class="font-black text-sm uppercase tracking-wider opacity-40">Content</p>
+              <a routerLink="/worship" class="text-sm opacity-60 hover:opacity-100 transition-opacity">Worship</a>
+              <a routerLink="/events" class="text-sm opacity-60 hover:opacity-100 transition-opacity">Events</a>
+              <a routerLink="/wear" class="text-sm opacity-60 hover:opacity-100 transition-opacity">Wear &amp; Share</a>
+            </div>
+            <div class="flex flex-col gap-3">
+              <p class="font-black text-sm uppercase tracking-wider opacity-40">Stay Bold</p>
+              <p class="text-sm opacity-60">Get updates on new drops and events.</p>
+              <a routerLink="/join" class="btn btn-sm rounded-full bg-white/10 hover:bg-white/20 border-0 font-bold text-primary-content">
+                Join the Movement
+              </a>
+            </div>
+          </div>
+          <div class="border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <p class="text-xs opacity-30">© 2026 I Am Bold For Jesus. All rights reserved.</p>
+            <p class="text-xs opacity-30 italic">"I am not ashamed of the gospel" — Romans 1:16</p>
+          </div>
+        </div>
+      </footer>
+
+    </div>
+
+    <!-- Mobile drawer -->
+    <div class="drawer-side z-[100]">
+      <label for="about-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
+      <ul class="menu bg-base-200 min-h-full w-64 p-6 gap-2 font-semibold">
+        <li class="mb-6"><span class="font-black text-xl display text-primary">I AM BOLD</span></li>
+        <li><a routerLink="/" class="rounded-full font-semibold">Home</a></li>
+        <li><a routerLink="/about" class="rounded-full font-semibold text-secondary">About</a></li>
+        <li><a routerLink="/worship" class="rounded-full font-semibold">Worship</a></li>
+        <li><a routerLink="/wear" class="rounded-full font-semibold">Wear &amp; Share</a></li>
+        <li><a routerLink="/events" class="rounded-full font-semibold">Events</a></li>
+        <li><a routerLink="/give" class="rounded-full font-semibold">Give</a></li>
+        <li class="mt-4">
+          <a routerLink="/join" class="btn btn-primary rounded-full font-bold">Join Now</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+</div>

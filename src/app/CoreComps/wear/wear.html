@@ -1,0 +1,387 @@
+<div class="min-h-screen bg-base-100 text-base-content">
+
+  <!-- NAVBAR drawer pattern -->
+  <div class="drawer">
+    <input id="wear-drawer" type="checkbox" class="drawer-toggle" />
+    <div class="drawer-content flex flex-col">
+
+      <header class="navbar bg-base-100/80 backdrop-blur-md border-b border-base-content/5 px-6 sticky top-0 z-50">
+        <div class="navbar-start">
+          <label for="wear-drawer" class="btn btn-ghost btn-circle lg:hidden">
+            <span class="material-symbols-outlined">menu</span>
+          </label>
+          <a routerLink="/" class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+              <span class="material-symbols-outlined text-primary-content text-base" style="font-variation-settings:'FILL' 1">auto_awesome</span>
+            </div>
+            <span class="display text-xl tracking-widest text-primary hidden sm:block">I AM BOLD</span>
+          </a>
+        </div>
+        <div class="navbar-center hidden lg:flex">
+          <ul class="menu menu-horizontal gap-1 text-sm font-semibold">
+            <li><a routerLink="/" class="rounded-full">Home</a></li>
+            <li><a routerLink="/join" class="rounded-full">Join</a></li>
+            <li><a routerLink="/about" class="rounded-full">About</a></li>
+            <li><a routerLink="/worship" class="rounded-full">Worship</a></li>
+            <li><a routerLink="/wear" class="rounded-full text-secondary font-bold">Wear &amp; Share</a></li>
+            <li><a routerLink="/events" class="rounded-full">Events</a></li>
+            <li><a routerLink="/give" class="rounded-full">Give</a></li>
+          </ul>
+        </div>
+        <div class="navbar-end gap-2">
+          <a routerLink="/join" class="btn btn-primary btn-sm rounded-full font-bold shadow shadow-primary/30">
+            Join Now
+          </a>
+        </div>
+      </header>
+
+      <!-- HERO -->
+      <section class="relative min-h-[480px] flex items-center overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-r from-base-100 via-base-100/95 to-primary/20"></div>
+        <div class="absolute right-0 top-0 w-[500px] h-[500px] rounded-full bg-primary/10 blur-[100px] pointer-events-none"></div>
+        <div class="absolute right-20 bottom-0 w-[300px] h-[300px] rounded-full bg-secondary/10 blur-[80px] pointer-events-none"></div>
+
+        <div class="relative max-w-[1200px] mx-auto px-6 md:px-10 py-20 w-full">
+          <div class="max-w-xl flex flex-col gap-5">
+            <div class="badge badge-secondary rounded-full font-bold uppercase tracking-wider px-4 py-2 w-fit">
+              <span class="material-symbols-outlined text-sm mr-1">checkroom</span>
+              Wear &amp; Share
+            </div>
+            <h1 class="display text-6xl md:text-7xl tracking-widest leading-none">
+              Wear The<br/>
+              <span class="text-primary">Message</span>
+            </h1>
+            <p class="text-base-content/60 text-lg leading-relaxed max-w-md">
+              Every piece of Bold gear is a declaration. Wear it, share it, start conversations that change lives.
+            </p>
+            @if (shopFormUrl()) {
+              <a [href]="shopFormUrl()" target="_blank" rel="noopener"
+                 class="btn btn-primary rounded-full font-bold w-fit shadow-lg shadow-primary/30 px-8">
+                <span class="material-symbols-outlined">shopping_bag</span>
+                Order Now
+              </a>
+            }
+          </div>
+        </div>
+      </section>
+
+      <!-- FEATURED ITEM -->
+      @if (featuredItem()) {
+        <section class="bg-base-200 py-16">
+          <div class="max-w-[1200px] mx-auto px-6 md:px-10">
+            <div class="flex items-center gap-3 mb-8">
+              <span class="material-symbols-outlined text-accent" style="font-variation-settings:'FILL' 1">star</span>
+              <h2 class="display text-3xl tracking-widest">Featured Drop</h2>
+            </div>
+            <div class="card bg-base-100 lg:card-side overflow-hidden border border-primary/10 shadow-xl">
+              <figure class="lg:w-[420px] shrink-0 aspect-square lg:aspect-auto">
+                @if (featuredItem()!.image) {
+                  <img [src]="featuredItem()!.image" [alt]="featuredItem()!.name"
+                       class="w-full h-full object-cover" />
+                } @else {
+                  <div class="w-full h-full min-h-[280px] bg-base-300 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-7xl opacity-20">checkroom</span>
+                  </div>
+                }
+              </figure>
+              <div class="card-body p-8 lg:p-12 justify-center gap-5">
+                <div class="badge badge-accent rounded-full font-bold uppercase text-xs tracking-wider w-fit">
+                  Featured
+                </div>
+                <div>
+                  <h3 class="display text-5xl tracking-widest leading-none mb-2">{{ featuredItem()!.name }}</h3>
+                  <p class="text-primary font-black text-3xl">{{ formatPrice(featuredItem()!.price) }}</p>
+                </div>
+                <div class="flex items-center gap-2">
+                  <div class="badge badge-success rounded-full font-bold">In Stock</div>
+                  <div class="badge badge-ghost rounded-full capitalize">{{ featuredItem()!.category }}</div>
+                </div>
+                <p class="text-base-content/50 leading-relaxed">
+                  Rep the movement. Every piece is made to spark conversations about faith, boldness, and purpose.
+                </p>
+                @if (shopFormUrl()) {
+                  <button class="btn btn-primary rounded-full font-bold w-fit px-8 shadow-lg shadow-primary/30"
+                          (click)="orderItem(featuredItem()!)">
+                    <span class="material-symbols-outlined">shopping_bag</span>
+                    Order This Item
+                  </button>
+                } @else {
+                  <button class="btn btn-disabled rounded-full font-bold w-fit px-8" disabled>
+                    Order Form Coming Soon
+                  </button>
+                }
+              </div>
+            </div>
+          </div>
+        </section>
+      }
+
+      <!-- CATEGORY FILTER + GRID -->
+      <section class="bg-base-100 py-16">
+        <div class="max-w-[1200px] mx-auto px-6 md:px-10 flex flex-col gap-10">
+
+          <!-- Section header -->
+          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div>
+              <h2 class="display text-4xl tracking-widest">Full Collection</h2>
+              <p class="opacity-40 text-sm mt-1">{{ allItems().length }} item{{ allItems().length !== 1 ? 's' : '' }} available</p>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+
+              <!-- ── Currency toggle ── -->
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-black opacity-40 uppercase tracking-wider">Price in</span>
+                <div class="flex gap-1 bg-base-200 rounded-full p-1">
+                  <button class="btn btn-xs rounded-full font-bold transition-all"
+                          [class.btn-primary]="currency() === 'UGX'"
+                          [class.btn-ghost]="currency() !== 'UGX'"
+                          (click)="currency.set('UGX')">
+                    🇺🇬 UGX
+                  </button>
+                  <button class="btn btn-xs rounded-full font-bold transition-all"
+                          [class.btn-primary]="currency() === 'USD'"
+                          [class.btn-ghost]="currency() !== 'USD'"
+                          (click)="currency.set('USD')">
+                    🇺🇸 USD
+                  </button>
+                </div>
+              </div>
+
+              <!-- Category filter pills -->
+              <div class="flex flex-wrap gap-2">
+                @for (cat of categories; track cat.key) {
+                  @if (countFor(cat.key) > 0 || cat.key === 'all') {
+                    <button
+                      class="btn btn-sm rounded-full font-bold gap-1.5 transition-all"
+                      [class.btn-primary]="activeCategory() === cat.key"
+                      [class.btn-ghost]="activeCategory() !== cat.key"
+                      [class.border]="activeCategory() !== cat.key"
+                      [class.border-base-content/10]="activeCategory() !== cat.key"
+                      (click)="activeCategory.set(cat.key)">
+                      <span class="material-symbols-outlined text-sm">{{ cat.icon }}</span>
+                      {{ cat.label }}
+                      <span class="badge badge-xs rounded-full"
+                            [class.badge-primary-content]="activeCategory() === cat.key"
+                            [class.badge-ghost]="activeCategory() !== cat.key">
+                        {{ countFor(cat.key) }}
+                      </span>
+                    </button>
+                  }
+                }
+              </div>
+            </div>
+          </div>
+
+          <!-- Empty state -->
+          @if (filteredItems().length === 0) {
+            <div class="text-center py-24 flex flex-col items-center gap-4 opacity-30">
+              <span class="material-symbols-outlined text-7xl">checkroom</span>
+              <p class="display text-3xl tracking-widest">Coming Soon</p>
+              <p class="text-sm">New drops are on the way. Check back soon.</p>
+            </div>
+          } @else {
+
+            <!-- Product grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+              @for (item of filteredItems(); track item.id) {
+                <div
+                  class="card bg-base-200 overflow-hidden group transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1 border border-transparent hover:border-primary/20"
+                  [class.opacity-50]="!item.inStock"
+                  [class.cursor-pointer]="item.inStock && !!shopFormUrl()"
+                  [class.cursor-not-allowed]="!item.inStock || !shopFormUrl()"
+                  (click)="item.inStock && shopFormUrl() ? orderItem(item) : null">
+
+                  <figure class="aspect-[3/4] overflow-hidden relative">
+                    @if (item.image) {
+                      <img [src]="item.image" [alt]="item.name"
+                           class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                    } @else {
+                      <div class="w-full h-full bg-base-300 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-5xl opacity-20">checkroom</span>
+                      </div>
+                    }
+
+                    @if (!item.inStock) {
+                      <div class="absolute inset-0 bg-base-100/60 flex items-center justify-center">
+                        <div class="badge badge-error rounded-full font-bold px-4 py-2">Sold Out</div>
+                      </div>
+                    }
+
+                    @if (item.inStock && shopFormUrl()) {
+                      <div class="absolute inset-0 bg-primary/80 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <span class="material-symbols-outlined text-white text-4xl mb-2" style="font-variation-settings:'FILL' 1">shopping_bag</span>
+                        <p class="text-white font-black text-sm tracking-widest display">ORDER NOW</p>
+                      </div>
+                    }
+                  </figure>
+
+                  <div class="card-body p-3 md:p-4 gap-1.5">
+                    <p class="font-black text-sm leading-tight line-clamp-2">{{ item.name }}</p>
+                    <div class="flex items-center justify-between gap-1">
+                      <p class="text-primary font-black text-base">{{ formatPrice(item.price) }}</p>
+                      <div class="badge badge-xs rounded-full font-bold capitalize"
+                           [class.badge-ghost]="item.inStock"
+                           [class.badge-error]="!item.inStock">
+                        {{ item.inStock ? item.category : 'Sold Out' }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </section>
+
+      <!-- HOW TO ORDER -->
+      <section class="bg-base-200 py-16">
+        <div class="max-w-[1200px] mx-auto px-6 md:px-10 flex flex-col gap-10">
+          <div class="text-center">
+            <h2 class="display text-4xl tracking-widest mb-2">How to Order</h2>
+            <p class="opacity-40 text-sm">Simple, fast, and direct.</p>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div class="card bg-base-100 border border-base-content/5">
+              <div class="card-body p-6 items-center text-center gap-3">
+                <div class="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
+                  <span class="material-symbols-outlined text-primary text-2xl" style="font-variation-settings:'FILL' 1">touch_app</span>
+                </div>
+                <div class="badge badge-primary badge-sm rounded-full font-black">Step 1</div>
+                <h3 class="font-black text-lg">Pick Your Item</h3>
+                <p class="text-sm opacity-50 leading-relaxed">Browse the collection and click on the item you want to order.</p>
+              </div>
+            </div>
+            <div class="card bg-primary text-primary-content border border-primary">
+              <div class="card-body p-6 items-center text-center gap-3">
+                <div class="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center">
+                  <span class="material-symbols-outlined text-2xl" style="font-variation-settings:'FILL' 1">edit_note</span>
+                </div>
+                <div class="badge bg-white/20 text-white badge-sm rounded-full font-black border-0">Step 2</div>
+                <h3 class="font-black text-lg">Fill the Form</h3>
+                <p class="text-sm opacity-70 leading-relaxed">Tell us your size, quantity, any customizations and your delivery details.</p>
+              </div>
+            </div>
+            <div class="card bg-base-100 border border-base-content/5">
+              <div class="card-body p-6 items-center text-center gap-3">
+                <div class="w-14 h-14 rounded-full bg-secondary/10 flex items-center justify-center">
+                  <span class="material-symbols-outlined text-secondary text-2xl" style="font-variation-settings:'FILL' 1">local_shipping</span>
+                </div>
+                <div class="badge badge-secondary badge-sm rounded-full font-black">Step 3</div>
+                <h3 class="font-black text-lg">We Reach Out</h3>
+                <p class="text-sm opacity-50 leading-relaxed">Our team contacts you to confirm your order and arrange delivery.</p>
+              </div>
+            </div>
+          </div>
+          @if (shopFormUrl()) {
+            <div class="flex justify-center">
+              <a [href]="shopFormUrl()" target="_blank" rel="noopener"
+                 class="btn btn-primary rounded-full font-bold px-10 shadow-lg shadow-primary/30">
+                <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">shopping_bag</span>
+                Start Your Order
+              </a>
+            </div>
+          } @else {
+            <div class="alert rounded-box border border-warning/20 bg-warning/5 max-w-md mx-auto">
+              <span class="material-symbols-outlined text-warning">hourglass_top</span>
+              <span class="text-sm font-semibold">Order form coming soon — check back shortly!</span>
+            </div>
+          }
+        </div>
+      </section>
+
+      <!-- CTA BANNER -->
+      <section class="relative py-20 overflow-hidden"
+               style="background: linear-gradient(135deg, #6A0DAD, #3d0670, oklch(20% 0.042 265.755))">
+        <div class="absolute top-0 left-1/4 w-64 h-64 rounded-full bg-white/5 blur-3xl pointer-events-none"></div>
+        <div class="absolute bottom-0 right-1/4 w-96 h-96 rounded-full bg-secondary/10 blur-3xl pointer-events-none"></div>
+        <div class="relative max-w-[1200px] mx-auto px-6 md:px-10 text-center flex flex-col items-center gap-6">
+          <div class="badge badge-accent rounded-full font-bold uppercase tracking-wider px-4 py-2">
+            More Than Merch
+          </div>
+          <h2 class="display text-5xl md:text-6xl tracking-widest text-white leading-none">
+            Wear It.<br/>Share It.<br/><span class="text-secondary">Live It.</span>
+          </h2>
+          <p class="text-white/60 max-w-md leading-relaxed">
+            Bold gear isn't just clothing — it's a conversation starter, a declaration of faith, and an invitation for others to ask why you're different.
+          </p>
+          <a routerLink="/join" class="btn btn-secondary rounded-full font-bold px-10 shadow-lg">
+            <span class="material-symbols-outlined">group_add</span>
+            Join the Movement
+          </a>
+        </div>
+      </section>
+
+      <!-- FOOTER -->
+      <footer class="bg-primary text-primary-content pt-16 pb-8">
+        <div class="max-w-[1200px] mx-auto px-6 md:px-10 flex flex-col gap-12">
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-10">
+            <div class="md:col-span-1 flex flex-col gap-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
+                  <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">auto_awesome</span>
+                </div>
+                <span class="display text-2xl tracking-widest">I AM BOLD</span>
+              </div>
+              <p class="text-sm opacity-60 leading-relaxed">A movement for the bold, the brave, and the unashamed.</p>
+              <div class="flex gap-3">
+                <a href="#" class="btn btn-ghost btn-sm btn-circle opacity-60 hover:opacity-100">
+                  <span class="material-symbols-outlined text-lg">share</span>
+                </a>
+              </div>
+            </div>
+            <div class="flex flex-col gap-3">
+              <p class="font-black text-sm uppercase tracking-wider opacity-40">Movement</p>
+              <a routerLink="/about" class="text-sm opacity-60 hover:opacity-100 transition-opacity">About</a>
+              <a routerLink="/join" class="text-sm opacity-60 hover:opacity-100 transition-opacity">Join Us</a>
+              <a routerLink="/give" class="text-sm opacity-60 hover:opacity-100 transition-opacity">Give</a>
+            </div>
+            <div class="flex flex-col gap-3">
+              <p class="font-black text-sm uppercase tracking-wider opacity-40">Content</p>
+              <a routerLink="/worship" class="text-sm opacity-60 hover:opacity-100 transition-opacity">Worship</a>
+              <a routerLink="/events" class="text-sm opacity-60 hover:opacity-100 transition-opacity">Events</a>
+              <a routerLink="/wear" class="text-sm opacity-60 hover:opacity-100 transition-opacity">Wear &amp; Share</a>
+            </div>
+            <div class="flex flex-col gap-4">
+              <p class="font-black text-sm uppercase tracking-wider opacity-40">Stay Bold</p>
+              <p class="text-sm opacity-60">Get updates on new drops and events.</p>
+              <a routerLink="/join" class="btn btn-sm rounded-full bg-white/10 hover:bg-white/20 border-0 font-bold text-primary-content">
+                Join the Movement
+              </a>
+            </div>
+          </div>
+          <div class="border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <p class="text-xs opacity-30">© 2026 I Am Bold For Jesus. All rights reserved.</p>
+            <p class="text-xs opacity-30 italic">"I am not ashamed of the gospel" — Romans 1:16</p>
+          </div>
+        </div>
+      </footer>
+
+    </div>
+
+    <!-- Drawer sidebar (mobile) -->
+    <div class="drawer-side z-[100]">
+      <label for="wear-drawer" class="drawer-overlay"></label>
+      <ul class="menu bg-base-200 min-h-full w-72 p-6 gap-1 text-base-content">
+        <li class="mb-4">
+          <a routerLink="/" class="flex items-center gap-3 p-0 hover:bg-transparent">
+            <div class="w-9 h-9 rounded-full bg-primary flex items-center justify-center">
+              <span class="material-symbols-outlined text-primary-content text-base" style="font-variation-settings:'FILL' 1">auto_awesome</span>
+            </div>
+            <span class="display text-xl tracking-widest text-primary">I AM BOLD</span>
+          </a>
+        </li>
+        <li><a routerLink="/" class="rounded-full font-semibold">Home</a></li>
+        <li><a routerLink="/about" class="rounded-full font-semibold">About</a></li>
+        <li><a routerLink="/worship" class="rounded-full font-semibold">Worship</a></li>
+        <li><a routerLink="/wear" class="rounded-full font-semibold text-secondary">Wear &amp; Share</a></li>
+        <li><a routerLink="/events" class="rounded-full font-semibold">Events</a></li>
+        <li><a routerLink="/give" class="rounded-full font-semibold">Give</a></li>
+        <li class="mt-4">
+          <a routerLink="/join" class="btn btn-primary rounded-full font-bold">Join Now</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+</div>
