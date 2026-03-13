@@ -35,11 +35,12 @@ export class Dashboard {
 
   // FORMS
   formPages = [
-    { key: 'join', label: 'Join Page', icon: 'group_add', description: 'Registration form shown on the Join page.' },
-    { key: 'give', label: 'Partner', icon: 'volunteer_activism', description: 'Donation or partnership form on the Give page.' },
-    { key: 'events', label: 'Events', icon: 'event', description: 'Event sign-up form on the Events page.' },
-    { key: 'worship', label: 'Worship', icon: 'music_note', description: 'Prayer / worship request form on the Worship page.' },
-    { key: 'wear', label: 'Merch Order Form', icon: 'shopping_bag', description: 'Google Form visitors fill when ordering merch.' },
+    { key: 'join',    label: 'Join Form',       icon: 'bolt',              description: 'Main join the movement form.' },
+    { key: 'partner', label: 'Partner Form',    icon: 'handshake',         description: 'Form for people becoming ministry partners.' },
+    { key: 'give',    label: 'Donation Link',   icon: 'volunteer_activism', description: 'Flutterwave donation page link.' },
+    { key: 'worship', label: 'Testimony Form',  icon: 'church',            description: 'Share a testimony form link.' },
+    { key: 'shop',    label: 'Merch Order Form',icon: 'shopping_bag',      description: 'Google Form for merch orders.' },
+    { key: 'events',  label: 'Events RSVP Form',icon: 'calendar_month',    description: 'RSVP form for events.' },
   ] as { key: FormPage; label: string; icon: string; description: string }[];
 
   draftUrls: Record<FormPage, string> = {
@@ -47,7 +48,8 @@ export class Dashboard {
     give: this.joinConfig.getUrl('give'),
     events: this.joinConfig.getUrl('events'),
     worship: this.joinConfig.getUrl('worship'),
-    wear: this.joinConfig.getUrl('wear')
+    wear: this.joinConfig.getUrl('wear'),
+    partner: this.joinConfig.getUrl('partner')
   };
 
   saveFormUrl(page: FormPage) {

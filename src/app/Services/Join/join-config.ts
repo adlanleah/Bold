@@ -1,7 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { doc, Firestore, onSnapshot, setDoc } from '@angular/fire/firestore';
 
-export type FormPage = 'join' | 'give'  | 'worship' | 'wear' | 'events';
+export type FormPage = 'join' | 'give'  | 'worship' | 'wear' | 'events' | 'partner';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +11,7 @@ export class JoinConfig {
   private docRef    = doc(this.firestore, 'config', 'formUrls');
 
   private _formUrls = signal<Record<FormPage, string>>({
-    join: '', give: '', events: '', worship: '', wear: '',
+    join: '', give: '', events: '', worship: '', wear: '', partner: ''
   });
 
   readonly formUrls = this._formUrls.asReadonly();
