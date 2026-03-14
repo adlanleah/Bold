@@ -40,10 +40,20 @@ service cloud.firestore {
        allow read, write: if request.auth != null;
     }
 
-    //admin dash
+    match /testimonies/{id} {
+      allow read, write: if request.auth != null;
+    }
+
+    match /community-photos/{id} {
+      allow read, write: if request.auth != null;
+    }
+
     match /config/{id} {
       allow read, write: if request.auth != null;
     }
     
+    match /donations/{id} {
+      allow read, write: if request.auth != null;
+    }
 }
 }

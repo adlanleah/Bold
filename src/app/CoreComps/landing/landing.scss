@@ -1,0 +1,85 @@
+// ── Hero ──────────────────────────────────────────────────────
+.hero-section {
+  min-height: 100svh;
+}
+ 
+.hero-headline {
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.06em;
+  font-size: clamp(3.5rem, 9vw, 7rem);
+  line-height: 0.95;
+  display: block;
+}
+ 
+// ── YouTube iframe background ─────────────────────────────────
+// Scales the iframe to always cover the full hero section
+// regardless of viewport aspect ratio
+.youtube-bg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  // Always wider/taller than the container
+  width: 100vw;
+  height: 56.25vw;   // 16:9 ratio based on width
+  min-height: 100vh;
+  min-width: 177.78vh; // 16:9 ratio based on height
+  pointer-events: none;
+  border: none;
+}
+ 
+// ── Scroll indicator ──────────────────────────────────────────
+.scroll-indicator {
+  width: 1.5px;
+  height: 40px;
+  background: linear-gradient(to bottom, transparent, currentColor);
+  animation: scroll-pulse 1.8s ease-in-out infinite;
+}
+ 
+@keyframes scroll-pulse {
+  0%, 100% { opacity: 0.2; transform: scaleY(0.6); }
+  50%       { opacity: 0.6; transform: scaleY(1); }
+}
+ 
+// ── 16:9 video wrapper ────────────────────────────────────────
+.video-wrapper {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%;
+ 
+  iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+}
+ 
+// ── Community grid ────────────────────────────────────────────
+.community-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: 200px;
+  gap: 12px;
+ 
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: 220px;
+  }
+}
+ 
+.community-card {
+  grid-row: span 1;
+  &.tall { grid-row: span 2; }
+}
+ 
+// ── Marquee ───────────────────────────────────────────────────
+@keyframes marquee-left {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+ 
+.animate-marquee-left {
+  animation: marquee-left 30s linear infinite;
+  &:hover { animation-play-state: paused; }
+}

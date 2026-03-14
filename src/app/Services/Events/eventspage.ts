@@ -1,38 +1,33 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { addDoc, collection, doc ,deleteDoc, Firestore, onSnapshot, orderBy, query, updateDoc } from '@angular/fire/firestore';
+import { addDoc, collection, CollectionReference, deleteDoc, doc, Firestore, onSnapshot, orderBy,query, updateDoc,} from '@angular/fire/firestore';
 
 export interface CalendarEvent {
-  id: string;
-  title: string;
-  date: string;
-  time: string;
-  location: string;
+  id:          string;
+  title:       string;
+  date:        string;
+  time:        string;
+  location:    string;
   description: string;
-  type: 'outreach' | 'worship' | 'prayer' | 'other';
+  type:        'outreach' | 'worship' | 'prayer' | 'other';
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class Eventspage {
   private firestore = inject(Firestore);
-  private colRef    = collection(this.firestore, 'events');
+  private colRef!: CollectionReference;
 
-  private _events = signal<CalendarEvent[]>([]);
-
-  readonly events = this._events.asReadonly();
-
+  private _events       = signal<CalendarEvent[]>([]);
+  readonly events       = this._events.asReadonly();
   readonly upcomingEvents = computed(() => {
     const today = new Date().toISOString().split('T')[0];
     return this._events().filter(e => e.date >= today);
   });
 
   constructor() {
+    this.colRef = collection(this.firestore, 'events');
     const q = query(this.colRef, orderBy('date', 'asc'));
     onSnapshot(q, (snap) => {
-      this._events.set(
-        snap.docs.map(d => ({ id: d.id, ...d.data() } as CalendarEvent))
-      );
+      this._events.set(snap.docs.map(d => ({ id: d.id, ...d.data() } as CalendarEvent)));
     });
   }
 
@@ -47,5 +42,4 @@ export class Eventspage {
   async removeEvent(id: string): Promise<void> {
     await deleteDoc(doc(this.firestore, 'events', id));
   }
-  
 }

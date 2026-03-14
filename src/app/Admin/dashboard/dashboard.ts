@@ -1,487 +1,412 @@
-import { Component, inject, signal } from '@angular/core';
+import { inject, OnInit, signal } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormPage, JoinConfig } from '../../Services/Join/join-config';
 import { Merch, MerchItem } from '../../Services/Merch/merch';
 import { Media, MediaItem } from '../../Services/Media/media';
 import { CalendarEvent, Eventspage } from '../../Services/Events/eventspage';
 import { StorageUpload } from '../../Services/Storage/storage-upload';
-import { SlicePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { SiteStats, Stats } from '../../Services/Stats/stats';
+import { SiteSettingsService } from '../../Services/Site/site-settings';
+import { Testimonies, Testimony } from '../../Services/People/testimonies';
+import { CommunityPhoto, CommunityPhotos } from '../../Services/Comminity/community-photos';
+import { Auth, signOut } from '@angular/fire/auth';
 
-type AdminTab = 'forms' | 'merch' | 'media' | 'events';
-type InputMode = 'url' | 'upload';
+type AdminTab = | 'forms'| 'merch'| 'media'| 'events'| 'stats'| 'settings'| 'testimonies'| 'community';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [RouterLink, FormsModule, SlicePipe],
+  imports: [RouterLink, FormsModule],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })
-export class Dashboard {
-  private joinConfig = inject(JoinConfig);
-  private merchSvc = inject(Merch);
-  private mediaSvc = inject(Media);
-  private eventsSvc = inject(Eventspage);
-  private uploadSvc = inject(StorageUpload);
+export class Dashboard implements OnInit {
+  private auth               = inject(Auth);
+  private joinConfig         = inject(JoinConfig);
+  private merchSvc           = inject(Merch);
+  private mediaSvc           = inject(Media);
+  private eventsSvc          = inject(Eventspage);
+  private uploadSvc          = inject(StorageUpload);
+  private statsSvc           = inject(Stats);
+  private settingsSvc        = inject(SiteSettingsService);
+  private testimoniesSvc     = inject(Testimonies);
+  private communityPhotosSvc = inject(CommunityPhotos);
 
+  // ── Tabs ─────────────────────────────────────────────────
   activeTab = signal<AdminTab>('forms');
 
-  toast = signal<{ message: string; type: 'success' | 'error' } | null>(null);
+  tabs: { key: AdminTab; label: string; icon: string }[] = [
+    { key: 'forms',       label: 'Form Links',    icon: 'link'           },
+    { key: 'settings',    label: 'Site Settings', icon: 'tune'           },
+    { key: 'stats',       label: 'Live Stats',    icon: 'bar_chart'      },
+    { key: 'testimonies', label: 'Testimonies',   icon: 'format_quote'   },
+    { key: 'community',   label: 'Community',     icon: 'photo_library'  },
+    { key: 'merch',       label: 'Merch',         icon: 'checkroom'      },
+    { key: 'media',       label: 'Media',         icon: 'play_circle'    },
+    { key: 'events',      label: 'Events',        icon: 'calendar_month' },
+  ];
 
-  showToast(message: string, type: 'success' | 'error' = 'success') {
-    this.toast.set({ message, type });
-    setTimeout(() => this.toast.set(null), 3500);
+  // ── Form Links ───────────────────────────────────────────
+  formPages: { key: FormPage; label: string; icon: string; description: string }[] = [
+    { key: 'join',    label: 'Join Form',         icon: 'bolt',               description: 'Main join the movement form.'    },
+    { key: 'partner', label: 'Partner Form',      icon: 'handshake',          description: 'Form for ministry partners.'     },
+    { key: 'give',    label: 'Donation Link',     icon: 'volunteer_activism', description: 'Flutterwave donation page link.' },
+    { key: 'worship', label: 'Testimony Form',    icon: 'church',             description: 'Share a testimony form link.'    },
+    { key: 'wear',    label: 'Merch Order Form',  icon: 'shopping_bag',       description: 'Google Form for merch orders.'   },
+    { key: 'events',  label: 'Events RSVP Form',  icon: 'calendar_month',     description: 'RSVP form link for events.'      },
+  ];
+
+  formUrls    = signal<Record<string, string>>({});
+  savingForm  = signal<string | null>(null);
+
+  // ── Site Settings ────────────────────────────────────────
+  settings      = this.settingsSvc.settings;
+  settingsDraft = signal({
+    heroVideoUrl:         '',
+    heroHeadline:         '',
+    heroSubheadline:      '',
+    featuredWorshipUrl:   '',
+    featuredWorshipTitle: '',
+  });
+  savingSettings     = signal(false);
+  heroVideoUploading = signal(false);
+  heroVideoProgress  = signal(0);
+
+  // ── Stats ────────────────────────────────────────────────
+  statsDraft  = signal<SiteStats>({ members: 0, outreaches: 0, cities: 0, souls: 0 });
+  savingStats = signal(false);
+
+  // ── Testimonies ──────────────────────────────────────────
+  testimonies             = this.testimoniesSvc.items;
+  newTestimony            = signal<Partial<Testimony>>({ featured: false });
+  testimonyPhotoUploading = signal(false);
+  testimonyPhotoProgress  = signal(0);
+  savingTestimony         = signal(false);
+
+  // ── Community Photos ─────────────────────────────────────
+  communityPhotos    = this.communityPhotosSvc.photos;
+  newPhoto           = signal<Partial<CommunityPhoto>>({ featured: true, hashtag: '#IAmBold' });
+  communityUploading = signal(false);
+  communityProgress  = signal(0);
+
+  // ── Merch ────────────────────────────────────────────────
+  // .items signal (not .allItems)
+  allMerch            = this.merchSvc.items;
+  newMerch            = signal<Partial<MerchItem>>({ inStock: true, category: 'shirt' });
+  merchImageUploading = signal(false);
+  merchImageProgress  = signal(0);
+  savingMerch         = signal(false);
+  editingMerch        = signal<MerchItem | null>(null);
+
+  merchCategories: MerchItem['category'][] = ['shirt', 'hoodie', 'accessory', 'other'];
+
+  // ── Media ────────────────────────────────────────────────
+  // .items signal (not .allItems)
+  allMedia        = this.mediaSvc.items;
+  newMedia        = signal<Partial<MediaItem>>({ type: 'sermon' });
+  mediaUploading  = signal(false);
+  mediaProgress   = signal(0);
+  savingMedia     = signal(false);
+
+  // ── Events ───────────────────────────────────────────────
+  allEvents    = this.eventsSvc.events;
+  newEvent     = signal<Partial<CalendarEvent>>({ type: 'outreach' });
+  savingEvent  = signal(false);
+  editingEvent = signal<CalendarEvent | null>(null);
+
+  eventTypes: CalendarEvent['type'][] = ['outreach', 'worship', 'prayer', 'other'];
+
+  // ── Lifecycle ────────────────────────────────────────────
+  ngOnInit() {
+    const urls: Record<string, string> = {};
+    this.formPages.forEach(p => { urls[p.key] = this.joinConfig.getUrl(p.key as FormPage); });
+    this.formUrls.set(urls);
+
+    this.settingsDraft.set({ ...this.settings() });
+    this.statsDraft.set({ ...this.statsSvc.stats() });
   }
 
-  // FORMS
-  formPages = [
-    { key: 'join',    label: 'Join Form',       icon: 'bolt',              description: 'Main join the movement form.' },
-    { key: 'partner', label: 'Partner Form',    icon: 'handshake',         description: 'Form for people becoming ministry partners.' },
-    { key: 'give',    label: 'Donation Link',   icon: 'volunteer_activism', description: 'Flutterwave donation page link.' },
-    { key: 'worship', label: 'Testimony Form',  icon: 'church',            description: 'Share a testimony form link.' },
-    { key: 'shop',    label: 'Merch Order Form',icon: 'shopping_bag',      description: 'Google Form for merch orders.' },
-    { key: 'events',  label: 'Events RSVP Form',icon: 'calendar_month',    description: 'RSVP form for events.' },
-  ] as { key: FormPage; label: string; icon: string; description: string }[];
-
-  draftUrls: Record<FormPage, string> = {
-    join: this.joinConfig.getUrl('join'),
-    give: this.joinConfig.getUrl('give'),
-    events: this.joinConfig.getUrl('events'),
-    worship: this.joinConfig.getUrl('worship'),
-    wear: this.joinConfig.getUrl('wear'),
-    partner: this.joinConfig.getUrl('partner')
-  };
-
-  saveFormUrl(page: FormPage) {
-    this.joinConfig.setUrl(page, this.draftUrls[page]);
-    this.showToast('Form URL saved!');
+  // ── Auth ─────────────────────────────────────────────────
+  async logout() {
+    await signOut(this.auth);
   }
 
-  clearFormUrl(page: FormPage) {
-    this.draftUrls[page] = '';
-    this.joinConfig.setUrl(page, '');
-    this.showToast('Form URL cleared.', 'error');
+  // ── Form Links ───────────────────────────────────────────
+  getFormUrl(key: string): string {
+    return this.formUrls()[key] ?? '';
   }
 
-  getLiveUrl(page: FormPage) {
-    return this.joinConfig.getUrl(page);
+  setFormUrl(key: string, value: string) {
+    this.formUrls.update(u => ({ ...u, [key]: value }));
   }
 
-  // MERCH
+  async saveFormUrl(key: FormPage) {
+    this.savingForm.set(key);
+    await this.joinConfig.setUrl(key, this.getFormUrl(key));
+    this.savingForm.set(null);
+  }
 
-  merch = this.merchSvc.items;
+  // ── Site Settings ────────────────────────────────────────
+  patchSettings(key: string, value: string) {
+    this.settingsDraft.update(d => ({ ...d, [key]: value }));
+  }
 
-  newMerch: Omit<MerchItem, 'id'> = this.emptyMerch();
+  async saveSettings() {
+    this.savingSettings.set(true);
+    await this.settingsSvc.set(this.settingsDraft());
+    this.savingSettings.set(false);
+  }
 
-  editingMerchId = signal<string | null>(null);
+  async uploadHeroVideo(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+    this.heroVideoUploading.set(true);
+    // Hero videos go in media/video folder
+    const { downloadUrl } = await this.uploadSvc.upload(file, 'media/video', (p) => this.heroVideoProgress.set(p));
+    this.patchSettings('heroVideoUrl', downloadUrl);
+    this.heroVideoUploading.set(false);
+  }
 
-  editMerchDraft: Partial<MerchItem> = {};
+  // ── Stats ────────────────────────────────────────────────
+  get statsKeys(): (keyof SiteStats)[] {
+    return ['members', 'outreaches', 'cities', 'souls'];
+  }
 
-  merchImageMode = signal<InputMode>('url');
-
-  merchImageFile = signal<File | null>(null);
-
-  merchImagePreview = signal<string>('');
-
-  merchUploadProgress = signal<number>(0);
-
-  merchUploading = signal(false);
-
-  merchDragOver = signal(false);
-
-  emptyMerch(): Omit<MerchItem, 'id'> {
-    return {
-      name: '',
-      price: 0,
-      image: '',
-      storagePath: '',
-      inStock: true,
-      category: 'shirt',
+  statsLabel(key: keyof SiteStats): string {
+    const map: Record<keyof SiteStats, string> = {
+      members:    'Members',
+      outreaches: 'Outreaches',
+      cities:     'Cities Reached',
+      souls:      'Lives Touched',
     };
+    return map[key];
   }
 
-  onMerchFileDrop(event: DragEvent) {
-    event.preventDefault();
-    this.merchDragOver.set(false);
+  patchStat(key: keyof SiteStats, value: string) {
+    this.statsDraft.update(d => ({ ...d, [key]: Number(value) }));
+  }
 
-    const file = event.dataTransfer?.files[0];
-    if (file && file.type.startsWith('image/')) {
-      this.setMerchFile(file);
+  async saveStats() {
+    this.savingStats.set(true);
+    await this.statsSvc.updateStats(this.statsDraft());
+    this.savingStats.set(false);
+  }
+
+  // ── Testimonies ──────────────────────────────────────────
+  patchTestimony(key: string, value: any) {
+    this.newTestimony.update(t => ({ ...t, [key]: value }));
+  }
+
+  async uploadTestimonyPhoto(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+    this.testimonyPhotoUploading.set(true);
+    // Testimony photos go in media-thumbnails (closest allowed folder)
+    const { downloadUrl, storagePath } = await this.uploadSvc.upload(file, 'media-thumbnails', (p) => this.testimonyPhotoProgress.set(p));
+    this.patchTestimony('photoUrl', downloadUrl);
+    this.patchTestimony('photoStoragePath', storagePath);
+    this.testimonyPhotoUploading.set(false);
+  }
+
+  async saveTestimony() {
+    const t = this.newTestimony();
+    if (!t.name || !t.quote) return;
+    this.savingTestimony.set(true);
+    await this.testimoniesSvc.add({
+      name:             t.name!,
+      role:             t.role ?? '',
+      quote:            t.quote!,
+      photoUrl:         t.photoUrl ?? '',
+      photoStoragePath: t.photoStoragePath,
+      featured:         t.featured ?? false,
+    });
+    this.newTestimony.set({ featured: false });
+    this.savingTestimony.set(false);
+  }
+
+  async toggleTestimonyFeatured(t: Testimony) {
+    if (!t.id) return;
+    await this.testimoniesSvc.update(t.id, { featured: !t.featured });
+  }
+
+  async deleteTestimony(t: Testimony) {
+    if (!t.id) return;
+    await this.testimoniesSvc.remove(t.id);
+  }
+
+  // ── Community Photos ─────────────────────────────────────
+  patchPhoto(key: string, value: any) {
+    this.newPhoto.update(p => ({ ...p, [key]: value }));
+  }
+
+  async uploadCommunityPhoto(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+    this.communityUploading.set(true);
+    // Community photos go in media-thumbnails folder
+    const { downloadUrl, storagePath } = await this.uploadSvc.upload(file, 'media-thumbnails', (p) => this.communityProgress.set(p));
+    this.communityUploading.set(false);
+    const p = this.newPhoto();
+    await this.communityPhotosSvc.add({
+      imageUrl:    downloadUrl,
+      storagePath: storagePath,
+      caption:     p.caption  ?? '',
+      hashtag:     p.hashtag  ?? '#IAmBold',
+      featured:    p.featured ?? true,
+    });
+    this.newPhoto.set({ featured: true, hashtag: '#IAmBold' });
+  }
+
+  async deleteCommunityPhoto(photo: CommunityPhoto) {
+    if (!photo.id) return;
+    await this.communityPhotosSvc.remove(photo.id);
+    if (photo.storagePath) await this.uploadSvc.delete(photo.storagePath);
+  }
+
+  // ── Merch ────────────────────────────────────────────────
+  patchMerch(key: string, value: any) {
+    this.newMerch.update(m => ({ ...m, [key]: value }));
+  }
+
+  async uploadMerchImage(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+    this.merchImageUploading.set(true);
+    // Merch images → 'merch-images' folder
+    const { downloadUrl, storagePath } = await this.uploadSvc.upload(file, 'merch-images', (p) => this.merchImageProgress.set(p));
+    this.patchMerch('image', downloadUrl);
+    this.patchMerch('storagePath', storagePath);
+    this.merchImageUploading.set(false);
+  }
+
+  async saveMerch() {
+    const m = this.newMerch();
+    if (!m.name || !m.price) return;
+    this.savingMerch.set(true);
+    if (this.editingMerch()) {
+      // updateItem (not update)
+      await this.merchSvc.updateItem(this.editingMerch()!.id, {
+        name:     m.name!,
+        price:    Number(m.price),
+        image:    m.image ?? '',
+        storagePath: m.storagePath ?? '',
+        inStock:  m.inStock ?? true,
+        category: m.category ?? 'shirt',
+      });
+      this.editingMerch.set(null);
+    } else {
+      // addItem (not add)
+      await this.merchSvc.addItem({
+        name:     m.name!,
+        price:    Number(m.price),
+        image:    m.image ?? '',
+        storagePath: m.storagePath ?? '',
+        inStock:  m.inStock ?? true,
+        category: m.category ?? 'shirt',
+      });
     }
+    this.newMerch.set({ inStock: true, category: 'shirt' });
+    this.savingMerch.set(false);
   }
 
-onMerchFileInput(files: FileList | null) {
-  const file = files?.[0];
-  if (file) this.setMerchFile(file);
-}
-
-  setMerchFile(file: File) {
-    this.merchImageFile.set(file);
-
-    const reader = new FileReader();
-    reader.onload = (e) => this.merchImagePreview.set(e.target?.result as string);
-    reader.readAsDataURL(file);
+  editMerch(item: MerchItem) {
+    this.editingMerch.set(item);
+    this.newMerch.set({ ...item });
+    this.activeTab.set('merch');
   }
 
-  clearMerchFile() {
-    this.merchImageFile.set(null);
-    this.merchImagePreview.set('');
-    this.merchUploadProgress.set(0);
+  async deleteMerch(item: MerchItem) {
+    // removeItem (not remove)
+    await this.merchSvc.removeItem(item.id);
+    if (item.storagePath) await this.uploadSvc.delete(item.storagePath);
   }
 
-  async addMerch() {
-  if (!this.newMerch.name || this.newMerch.price <= 0) return;
+  // ── Media ────────────────────────────────────────────────
+  patchMedia(key: string, value: any) {
+    this.newMedia.update(m => ({ ...m, [key]: value }));
+  }
 
-  if (this.merchImageMode() === 'upload' && this.merchImageFile()) {
-    this.merchUploading.set(true);
-    try {
-      const result = await this.uploadSvc.upload(
-        this.merchImageFile()!,
-        'merch-images',
-        (p) => this.merchUploadProgress.set(p)
-      );
-      this.newMerch.image = result.downloadUrl;
-      this.newMerch.storagePath = result.storagePath;
-    } catch {
-      this.showToast('Image upload failed.', 'error');
-      this.merchUploading.set(false);
-      return;
+  async uploadMediaFile(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+    this.mediaUploading.set(true);
+    const folder = file.type.startsWith('audio') ? 'media/audio' : 'media/video';
+    const { downloadUrl, storagePath } = await this.uploadSvc.upload(file, folder, (p) => this.mediaProgress.set(p));
+    this.patchMedia('embedUrl', downloadUrl);
+    this.patchMedia('storagePath', storagePath);
+    this.mediaUploading.set(false);
+  }
+
+  async saveMedia() {
+    const m = this.newMedia();
+    if (!m.title || !m.embedUrl) return;
+    this.savingMedia.set(true);
+    // addItem (not add)
+    await this.mediaSvc.addItem({
+      title:               m.title!,
+      minister:            m.minister ?? '',
+      duration:            m.duration ?? '',
+      thumbnail:           m.thumbnail ?? '',
+      thumbnailStoragePath: m.thumbnailStoragePath ?? '',
+      embedUrl:            m.embedUrl!,
+      storagePath:         m.storagePath ?? '',
+      type:                m.type ?? 'sermon',
+      publishedAt:         new Date().toISOString(),
+    });
+    this.newMedia.set({ type: 'sermon' });
+    this.savingMedia.set(false);
+  }
+
+  async deleteMedia(item: MediaItem) {
+    // removeItem (not remove)
+    await this.mediaSvc.removeItem(item.id);
+    if (item.storagePath) await this.uploadSvc.delete(item.storagePath);
+  }
+
+  // ── Events ───────────────────────────────────────────────
+  patchEvent(key: string, value: any) {
+    this.newEvent.update(e => ({ ...e, [key]: value }));
+  }
+
+  async saveEvent() {
+    const e = this.newEvent();
+    if (!e.title || !e.date) return;
+    this.savingEvent.set(true);
+    if (this.editingEvent()) {
+      // updateEvent (not update)
+      await this.eventsSvc.updateEvent(this.editingEvent()!.id, {
+        title:       e.title!,
+        date:        e.date!,
+        time:        e.time ?? '',
+        location:    e.location ?? '',
+        description: e.description ?? '',
+        type:        e.type ?? 'outreach',
+      });
+      this.editingEvent.set(null);
+    } else {
+      // addEvent (not add)
+      await this.eventsSvc.addEvent({
+        title:       e.title!,
+        date:        e.date!,
+        time:        e.time ?? '',
+        location:    e.location ?? '',
+        description: e.description ?? '',
+        type:        e.type ?? 'outreach',
+      });
     }
-    this.merchUploading.set(false);
+    this.newEvent.set({ type: 'outreach' });
+    this.savingEvent.set(false);
   }
 
-  this.merchSvc.addItem(this.newMerch);
-  this.newMerch = this.emptyMerch();
-  this.clearMerchFile();
-  this.showToast('Product added!');
-}
-
-  startEditMerch(item: MerchItem) {
-    this.editingMerchId.set(item.id);
-    this.editMerchDraft = { ...item };
+  editEvent(ev: CalendarEvent) {
+    this.editingEvent.set(ev);
+    this.newEvent.set({ ...ev });
+    this.activeTab.set('events');
   }
 
-  async saveEditMerch(id: string) {
-    await this.merchSvc.updateItem(id, this.editMerchDraft);
-    this.editingMerchId.set(null);
-    this.showToast('Product updated!');
+  async deleteEvent(ev: CalendarEvent) {
+    // removeEvent (not remove)
+    await this.eventsSvc.removeEvent(ev.id);
   }
-
-  toggleStock(id: string) {
-    this.merchSvc.toggleStock(id);
-  }
-
-  async removeMerch(id: string) {
-
-    const item = this.merch().find(i => i.id === id);
-
-    if (item?.storagePath) {
-      await this.uploadSvc.delete(item.storagePath);
-    }
-
-    await this.merchSvc.removeItem(id);
-
-    this.showToast('Product removed.', 'error');
-  }
-
-  // MEDIA
-
-  media = this.mediaSvc.items;
-
-  newMedia: Omit<MediaItem, 'id'> = this.emptyMedia();
-
-  editingMediaId = signal<string | null>(null);
-
-  editMediaDraft: Partial<MediaItem> = {};
-
-  mediaSourceMode = signal<InputMode>('url');
-
-  mediaFile = signal<File | null>(null);
-
-  mediaFilePreview = signal<string>('');
-
-  mediaUploadProgress = signal<number>(0);
-
-  mediaUploading = signal(false);
-
-  mediaDragOver = signal(false);
-
-  thumbMode = signal<InputMode>('url');
-
-  thumbFile = signal<File | null>(null);
-
-  thumbPreview = signal<string>('');
-
-  thumbUploading = signal(false);
-
-  thumbProgress = signal<number>(0);
-
-  emptyMedia(): Omit<MediaItem, 'id'> {
-    return {
-      title: '',
-      minister: '',
-      duration: '',
-      thumbnail: '',
-      thumbnailStoragePath: '',
-      embedUrl: '',
-      storagePath: '',
-      type: 'sermon',
-      publishedAt: new Date().toISOString().split('T')[0],
-    };
-  }
-
-  onMediaFileDrop(event: DragEvent) {
-
-    event.preventDefault();
-
-    this.mediaDragOver.set(false);
-
-    const file = event.dataTransfer?.files[0];
-
-    if (file && (file.type.startsWith('audio/') || file.type.startsWith('video/'))) {
-      this.setMediaFile(file);
-    }
-  }
-
-onMediaFileInput(files: FileList | null) {
-  const file = files?.[0];
-  if (file && (file.type.startsWith('audio/') || file.type.startsWith('video/'))) {
-    this.setMediaFile(file);
-  }
-}
-  setMediaFile(file: File) {
-
-    this.mediaFile.set(file);
-
-    if (file.type.startsWith('video/')) {
-
-      const preview = URL.createObjectURL(file);
-
-      this.mediaFilePreview.set(preview);
-    }
-  }
-
-  clearMediaFile() {
-
-    const preview = this.mediaFilePreview();
-
-    if (preview) URL.revokeObjectURL(preview);
-
-    this.mediaFile.set(null);
-
-    this.mediaFilePreview.set('');
-
-    this.mediaUploadProgress.set(0);
-  }
-
-onThumbInput(files: FileList | null) {
-  const file = files?.[0];
-  if (file && file.type.startsWith('image/')) {
-    this.thumbFile.set(file);
-    const reader = new FileReader();
-    reader.onload = (e: any) => this.thumbPreview.set(e.target?.result as string);
-    reader.readAsDataURL(file);
-  }
-}
-  clearThumb() {
-
-    this.thumbFile.set(null);
-
-    this.thumbPreview.set('');
-
-    this.thumbProgress.set(0);
-  }
-
-  getMediaFolder(file: File): 'media/audio' | 'media/video' {
-
-    return file.type.startsWith('audio/') ? 'media/audio' : 'media/video';
-  }
-
-  async addMedia() {
-
-    if (!this.newMedia.title) return;
-
-    if (this.mediaSourceMode() === 'url' && !this.newMedia.embedUrl) return;
-
-    if (this.mediaSourceMode() === 'upload' && !this.mediaFile()) return;
-
-    if (this.mediaSourceMode() === 'upload' && this.mediaFile()) {
-
-      this.mediaUploading.set(true);
-
-      try {
-
-        const folder = this.getMediaFolder(this.mediaFile()!);
-
-        const result = await this.uploadSvc.upload(
-          this.mediaFile()!,
-          folder,
-          (p) => this.mediaUploadProgress.set(p)
-        );
-
-        this.newMedia.embedUrl = result.downloadUrl;
-
-        this.newMedia.storagePath = result.storagePath;
-
-      } catch {
-
-        this.showToast('Media upload failed.', 'error');
-
-        this.mediaUploading.set(false);
-
-        return;
-      }
-
-      this.mediaUploading.set(false);
-    }
-
-    if (this.thumbMode() === 'upload' && this.thumbFile()) {
-
-      this.thumbUploading.set(true);
-
-      try {
-
-        const result = await this.uploadSvc.upload(
-          this.thumbFile()!,
-          'media-thumbnails',
-          (p) => this.thumbProgress.set(p)
-        );
-
-        this.newMedia.thumbnail = result.downloadUrl;
-
-        this.newMedia.thumbnailStoragePath = result.storagePath;
-
-      } catch {
-
-        this.showToast('Thumbnail upload failed.', 'error');
-
-        this.thumbUploading.set(false);
-
-        return;
-      }
-
-      this.thumbUploading.set(false);
-    }
-
-    this.mediaSvc.addItem(this.newMedia);
-
-    this.newMedia = this.emptyMedia();
-
-    this.clearMediaFile();
-
-    this.clearThumb();
-
-    this.showToast('Media published!');
-  }
-
-  startEditMedia(item: MediaItem) {
-
-    this.editingMediaId.set(item.id);
-
-    this.editMediaDraft = { ...item };
-  }
-
-  async saveEditMedia(id: string) {
-
-    await this.mediaSvc.updateItem(id, this.editMediaDraft);
-
-    this.editingMediaId.set(null);
-
-    this.showToast('Media updated!');
-  }
-
-  async removeMedia(id: string) {
-
-    const item = this.media().find(i => i.id === id);
-
-    if (item?.storagePath) await this.uploadSvc.delete(item.storagePath);
-
-    if (item?.thumbnailStoragePath) await this.uploadSvc.delete(item.thumbnailStoragePath);
-
-    await this.mediaSvc.removeItem(id);
-
-    this.showToast('Media removed.', 'error');
-  }
-
-  // EVENTS
-
-  events = this.eventsSvc.events;
-
-  newEvent: Omit<CalendarEvent, 'id'> = this.emptyEvent();
-
-  editingEventId = signal<string | null>(null);
-
-  editEventDraft: Partial<CalendarEvent> = {};
-
-  emptyEvent(): Omit<CalendarEvent, 'id'> {
-    return {
-      title: '',
-      date: '',
-      time: '',
-      location: '',
-      description: '',
-      type: 'outreach',
-    };
-  }
-
-  addEvent() {
-
-    if (!this.newEvent.title || !this.newEvent.date) return;
-
-    this.eventsSvc.addEvent(this.newEvent);
-
-    this.newEvent = this.emptyEvent();
-
-    this.showToast('Event added!');
-  }
-
-  startEditEvent(event: CalendarEvent) {
-
-    this.editingEventId.set(event.id);
-
-    this.editEventDraft = { ...event };
-  }
-
-  async saveEditEvent(id: string) {
-
-    await this.eventsSvc.updateEvent(id, this.editEventDraft);
-
-    this.editingEventId.set(null);
-
-    this.showToast('Event updated!');
-  }
-
-  removeEvent(id: string) {
-
-    this.eventsSvc.removeEvent(id);
-
-    this.showToast('Event removed.', 'error');
-  }
-
-  eventTypeBadge(type: CalendarEvent['type']): string {
-
-    const map: Record<string, string> = {
-
-      outreach: 'badge-primary',
-
-      worship: 'badge-secondary',
-
-      prayer: 'badge-accent',
-
-      other: 'badge-neutral',
-    };
-
-    return map[type] ?? 'badge-neutral';
-  }
-
-  formatFileSize(bytes: number): string {
-
-    if (bytes < 1024 * 1024) {
-
-      return `${(bytes / 1024).toFixed(1)} KB`;
-    }
-
-    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-  }
-
 }

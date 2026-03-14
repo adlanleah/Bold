@@ -1,37 +1,34 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { addDoc, collection, doc ,deleteDoc, Firestore, onSnapshot, orderBy, query, updateDoc } from '@angular/fire/firestore';
+import { addDoc, collection,CollectionReference, deleteDoc, doc, Firestore, onSnapshot, orderBy, query, updateDoc,} from '@angular/fire/firestore';
 
 export interface MediaItem {
-  id: string;
-  title: string;
-  minister: string;
-  duration: string;
-  thumbnail: string;
+  id:                  string;
+  title:               string;
+  minister:            string;
+  duration:            string;
+  thumbnail:           string;
   thumbnailStoragePath: string;
-  embedUrl: string;
-  storagePath: string;
-  type: 'sermon' | 'worship';
-  publishedAt: string;
+  embedUrl:            string;
+  storagePath:         string;
+  type:                'sermon' | 'worship';
+  publishedAt:         string;
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class Media {
   private firestore = inject(Firestore);
-  private colRef    = collection(this.firestore, 'media');
+  private colRef!: CollectionReference;
 
-  private _items = signal<MediaItem[]>([]);
-  readonly items   = this._items.asReadonly();
-  readonly sermons = computed(() => this._items().filter(i => i.type === 'sermon'));
-  readonly worship = computed(() => this._items().filter(i => i.type === 'worship'));
+  private _items    = signal<MediaItem[]>([]);
+  readonly items    = this._items.asReadonly();
+  readonly sermons  = computed(() => this._items().filter(i => i.type === 'sermon'));
+  readonly worship  = computed(() => this._items().filter(i => i.type === 'worship'));
 
   constructor() {
+    this.colRef = collection(this.firestore, 'media');
     const q = query(this.colRef, orderBy('publishedAt', 'desc'));
     onSnapshot(q, (snap) => {
-      this._items.set(
-        snap.docs.map(d => ({ id: d.id, ...d.data() } as MediaItem))
-      );
+      this._items.set(snap.docs.map(d => ({ id: d.id, ...d.data() } as MediaItem)));
     });
   }
 
