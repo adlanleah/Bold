@@ -21,16 +21,16 @@ import { TruncatePipe } from '../../pipes/truncate-pipe';
   styleUrl: './landing.scss',
 })
 export class Landing implements OnInit, OnDestroy, AfterViewInit {
-  private joinConfig         = inject(JoinConfig);
+   private joinConfig         = inject(JoinConfig);
   private merchSvc           = inject(Merch);
   private settingsSvc        = inject(SiteSettingsService);
   private statsSvc           = inject(Stats);
   private testimoniesSvc     = inject(Testimonies);
   private communityPhotosSvc = inject(CommunityPhotos);
-
+ 
   // ── Settings ──────────────────────────────────────────────
   settings = this.settingsSvc.settings;
-
+ 
   // ── Hero video type detection ─────────────────────────────
   // Returns 'youtube', 'file', or 'none'
   heroVideoType = computed(() => {
@@ -39,7 +39,7 @@ export class Landing implements OnInit, OnDestroy, AfterViewInit {
     if (this.isYouTubeUrl(url)) return 'youtube';
     return 'file';
   });
-
+ 
   // YouTube embed URL for hero background (autoplay, muted, loop, no controls)
   heroYouTubeEmbed = computed(() => {
     const url = this.settings().heroVideoUrl;
@@ -49,35 +49,35 @@ export class Landing implements OnInit, OnDestroy, AfterViewInit {
     // enablejsapi=1 needed for background iframe
     return `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&controls=0&disablekb=1&rel=0&modestbranding=1&playsinline=1`;
   });
-
+ 
   // ── Featured worship embed ────────────────────────────────
   featuredVideoEmbed = computed(() =>
     this.getYouTubeEmbed(this.settings().featuredWorshipUrl)
   );
-
+ 
   // ── Data ──────────────────────────────────────────────────
   featuredMerch   = computed(() => this.merchSvc.inStockItems().slice(0, 4));
   communityPhotos = computed(() => this.communityPhotosSvc.featured());
   featured        = computed(() => this.testimoniesSvc.featured());
   statItems       = computed(() => this.statsSvc.getStatItems());
-
+ 
   joinUrl = computed(() => this.joinConfig.getUrl('join').trim());
   giveUrl = computed(() => this.joinConfig.getUrl('give').trim());
   wearUrl = computed(() => this.joinConfig.getUrl('wear').trim());
-
+ 
   // ── Stats counter ─────────────────────────────────────────
   @ViewChild('statsSection') statsSection!: ElementRef;
   private statsObserver?: IntersectionObserver;
   private statsAnimated = false;
-
+ 
   displayStats = signal<Record<string, number>>({
     members: 0, outreaches: 0, cities: 0, souls: 0,
   });
-
+ 
   // ── Hero modal ────────────────────────────────────────────
   showHeroModal  = signal(false);
   heroVideoError = signal(false);
-
+ 
   // Hero modal embed — for YouTube shows player with controls, for file shows video tag
   heroModalEmbed = computed(() => {
     const url = this.settings().heroVideoUrl;
@@ -88,22 +88,22 @@ export class Landing implements OnInit, OnDestroy, AfterViewInit {
     }
     return ''; // file URLs handled directly in template
   });
-
-  // ── Testimony rotator ─────────────────────────────────────
+ 
+  // ── Testimony rotator ────────────────────────────────────
   activeTestimony = signal(0);
   private rotatorInterval?: ReturnType<typeof setInterval>;
-
+ 
   // ── Loading ───────────────────────────────────────────────
   loading = signal(true);
-
+ 
   ngOnInit() {
-    setTimeout(() => this.loading.set(false), 1200);
+    setTimeout(() => this.loading.set(false), 100);
     this.rotatorInterval = setInterval(() => {
       const total = this.featured().length;
       if (total > 1) this.activeTestimony.update(i => (i + 1) % total);
-    }, 5000);
+    }, 100000);
   }
-
+ 
   ngAfterViewInit() {
     this.statsObserver = new IntersectionObserver(
       (entries) => {
@@ -118,12 +118,23 @@ export class Landing implements OnInit, OnDestroy, AfterViewInit {
       this.statsObserver.observe(this.statsSection.nativeElement);
     }
   }
-
+ 
   ngOnDestroy() {
     if (this.rotatorInterval) clearInterval(this.rotatorInterval);
     if (this.statsObserver)   this.statsObserver.disconnect();
   }
-
+ 
+  // ── Testimony nav ─────────────────────────────────────────
+  prevTestimony() {
+    const total = this.featured().length;
+    this.activeTestimony.update(i => (i - 1 + total) % total);
+  }
+  nextTestimony() {
+    const total = this.featured().length;
+    this.activeTestimony.update(i => (i + 1) % total);
+  }
+  goToTestimony(i: number) { this.activeTestimony.set(i); }
+ 
   // ── Stat counter ──────────────────────────────────────────
   private animateStats() {
     const targets  = this.statsSvc.stats();
@@ -141,23 +152,12 @@ export class Landing implements OnInit, OnDestroy, AfterViewInit {
       }, duration / steps);
     });
   }
-
-  // ── Testimony nav ─────────────────────────────────────────
-  prevTestimony() {
-    const total = this.featured().length;
-    this.activeTestimony.update(i => (i - 1 + total) % total);
-  }
-  nextTestimony() {
-    const total = this.featured().length;
-    this.activeTestimony.update(i => (i + 1) % total);
-  }
-  goToTestimony(i: number) { this.activeTestimony.set(i); }
-
+ 
   // ── YouTube helpers ───────────────────────────────────────
   isYouTubeUrl(url: string): boolean {
     return /youtube\.com|youtu\.be/.test(url);
   }
-
+ 
   extractYouTubeId(url: string): string {
     const patterns = [
       /youtube\.com\/watch\?v=([^&]+)/,
@@ -171,18 +171,18 @@ export class Landing implements OnInit, OnDestroy, AfterViewInit {
     }
     return '';
   }
-
+ 
   getYouTubeEmbed(url: string): string {
     if (!url) return '';
     const id = this.extractYouTubeId(url);
     if (id) return `https://www.youtube.com/embed/${id}?rel=0&modestbranding=1&autoplay=1`;
     return url;
   }
-
+ 
   // ── Modals ────────────────────────────────────────────────
   openHeroModal()  { this.showHeroModal.set(true);  }
   closeHeroModal() { this.showHeroModal.set(false); }
-
+ 
   // ── Actions ───────────────────────────────────────────────
   openJoin() { const url = this.joinUrl(); if (url) window.open(url, '_blank', 'noopener'); }
   openGive() { const url = this.giveUrl(); if (url) window.open(url, '_blank', 'noopener'); }

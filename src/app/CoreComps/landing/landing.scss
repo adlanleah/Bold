@@ -55,6 +55,170 @@
   }
 }
  
+// ── Testimonies ───────────────────────────────────────────────
+.testimony-section {
+  position: relative;
+}
+ 
+.testimony-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+ 
+  @media (min-width: 768px) {
+    grid-template-columns: 280px 1fr;
+    gap: 4rem;
+    align-items: center;
+  }
+}
+ 
+.testimony-meta {
+  min-height: 220px;
+}
+ 
+.dot {
+  width: 6px;
+  height: 6px;
+  transition: width 0.3s, opacity 0.3s;
+ 
+  &.active {
+    width: 20px;
+  }
+}
+ 
+.testimony-card-wrap {
+  position: relative;
+  min-height: 260px;
+}
+ 
+.testimony-card {
+  position: relative;
+  animation: testimony-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+ 
+@keyframes testimony-in {
+  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+ 
+// Glow blob behind the card
+.card-glow {
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: #6A0DAD;
+  opacity: 0.06;
+  filter: blur(60px);
+  top: -40px;
+  right: -40px;
+  pointer-events: none;
+}
+ 
+// The actual card
+.card-inner {
+  position: relative;
+  background: oklch(26% 0.038 265);
+  border: 1px solid oklch(35% 0.044 257 / 0.6);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+ 
+  // Top gradient line
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 2rem;
+    right: 2rem;
+    height: 1px;
+    background: linear-gradient(to right, transparent, #6A0DAD88, transparent);
+    border-radius: 999px;
+  }
+ 
+  // Left accent bar
+  &::after {
+    content: '';
+    position: absolute;
+    top: 2rem;
+    bottom: 2rem;
+    left: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, #6A0DAD, #7DE2B8);
+    border-radius: 0 4px 4px 0;
+    opacity: 0.7;
+  }
+}
+ 
+.big-quote {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 5rem;
+  line-height: 0.6;
+  margin-bottom: -0.5rem;
+  opacity: 0.08;
+  color: #6A0DAD;
+}
+ 
+.quote-text {
+  font-size: 1.05rem;
+  line-height: 1.75;
+  opacity: 0.8;
+  font-style: italic;
+  padding-left: 0.25rem;
+}
+ 
+.person-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding-top: 1rem;
+  border-top: 1px solid oklch(35% 0.044 257 / 0.4);
+}
+ 
+.avatar-img {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #6A0DAD44;
+  flex-shrink: 0;
+}
+ 
+.avatar-fallback {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  background: #6A0DAD18;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+ 
+.person-info {
+  flex: 1;
+  min-width: 0;
+}
+ 
+.person-name {
+  font-weight: 900;
+  font-size: 0.9rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+ 
+.person-role {
+  font-size: 0.7rem;
+  opacity: 0.4;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 0.15rem;
+}
+ 
 // ── Community grid ────────────────────────────────────────────
 .community-grid {
   display: grid;

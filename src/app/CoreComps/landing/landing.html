@@ -233,66 +233,98 @@
       }
 
       <!-- ══════════════════════════════════
-           TESTIMONIES
+           TESTIMONIES — rotating card
       ══════════════════════════════════ -->
       @if (featured().length > 0) {
-        <section class="bg-base-100 py-20">
-          <div class="max-w-[1200px] mx-auto px-6 md:px-10 flex flex-col gap-10">
-            <div class="text-center flex flex-col items-center gap-3">
-              <div class="badge badge-accent rounded-full font-bold uppercase tracking-wider px-4 py-2 gap-2">
-                <span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1">format_quote</span>
-                Testimonies
-              </div>
-              <h2 class="display text-4xl md:text-5xl tracking-widest">Lives Changed</h2>
-              <p class="opacity-40 text-sm">Hear from the people in the movement.</p>
-            </div>
-            <div class="relative max-w-2xl mx-auto w-full">
-              @for (t of featured(); track t.id; let i = $index) {
-                @if (i === activeTestimony()) {
-                  <div class="card bg-base-200 border border-base-content/5 shadow-xl">
-                    <div class="card-body p-8 md:p-12 items-center text-center gap-6">
-                      <span class="material-symbols-outlined text-5xl text-primary/30" style="font-variation-settings:'FILL' 1">format_quote</span>
-                      <p class="text-lg md:text-xl leading-relaxed font-medium max-w-lg">"{{ t.quote }}"</p>
-                      <div class="flex flex-col items-center gap-2">
-                        @if (t.photoUrl) {
-                          <img [src]="t.photoUrl" [alt]="t.name" class="w-16 h-16 rounded-full object-cover border-2 border-primary/30" />
-                        } @else {
-                          <div class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
-                            <span class="material-symbols-outlined text-primary text-2xl">person</span>
-                          </div>
-                        }
-                        <p class="font-black">{{ t.name }}</p>
-                        <p class="text-xs opacity-40 uppercase tracking-wider">{{ t.role }}</p>
-                      </div>
+        <section class="testimony-section bg-base-100 py-20 overflow-hidden">
+          <div class="max-w-[1200px] mx-auto px-6 md:px-10">
+            <div class="testimony-layout">
+
+              <!-- Left — label + heading + dots -->
+              <div class="testimony-meta flex flex-col justify-between gap-8">
+                <div class="flex flex-col gap-4">
+                  <div class="badge badge-accent rounded-full font-bold uppercase tracking-wider px-3 py-1.5 w-fit gap-1.5 text-xs">
+                    <span class="material-symbols-outlined text-xs" style="font-variation-settings:'FILL' 1">format_quote</span>
+                    Testimonies
+                  </div>
+                  <h2 class="display text-4xl md:text-5xl tracking-widest leading-none">
+                    Lives<br/><span class="text-primary">Changed.</span>
+                  </h2>
+                  <p class="text-sm opacity-40 leading-relaxed max-w-xs">
+                    Real stories from real people walking boldly in the movement.
+                  </p>
+                </div>
+
+                <!-- Dots + arrows at the bottom of the left col -->
+                @if (featured().length > 1) {
+                  <div class="flex items-center gap-4">
+                    <button class="btn btn-circle btn-sm btn-ghost border border-base-content/10 hover:border-primary/40 hover:text-primary"
+                            (click)="prevTestimony()">
+                      <span class="material-symbols-outlined text-sm">arrow_back</span>
+                    </button>
+                    <div class="flex gap-1.5">
+                      @for (t of featured(); track t.id; let i = $index) {
+                        <button class="dot rounded-full transition-all duration-300 bg-base-content"
+                                [class.active]="i === activeTestimony()"
+                                [class.opacity-20]="i !== activeTestimony()"
+                                (click)="goToTestimony(i)">
+                        </button>
+                      }
                     </div>
+                    <button class="btn btn-circle btn-sm btn-ghost border border-base-content/10 hover:border-primary/40 hover:text-primary"
+                            (click)="nextTestimony()">
+                      <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                    </button>
                   </div>
                 }
-              }
-              @if (featured().length > 1) {
-                <button class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-5 btn btn-circle btn-sm btn-ghost border border-base-content/10"
-                        (click)="prevTestimony()">
-                  <span class="material-symbols-outlined text-sm">chevron_left</span>
-                </button>
-                <button class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-5 btn btn-circle btn-sm btn-ghost border border-base-content/10"
-                        (click)="nextTestimony()">
-                  <span class="material-symbols-outlined text-sm">chevron_right</span>
-                </button>
-              }
-            </div>
-            @if (featured().length > 1) {
-              <div class="flex justify-center gap-2">
+              </div>
+
+              <!-- Right — the active testimony card -->
+              <div class="testimony-card-wrap">
                 @for (t of featured(); track t.id; let i = $index) {
-                  <button class="h-2 rounded-full transition-all duration-300"
-                          [class.w-6]="i === activeTestimony()"
-                          [class.w-2]="i !== activeTestimony()"
-                          [class.bg-primary]="i === activeTestimony()"
-                          [class.bg-base-content]="i !== activeTestimony()"
-                          [class.opacity-20]="i !== activeTestimony()"
-                          (click)="goToTestimony(i)">
-                  </button>
+                  @if (i === activeTestimony()) {
+                    <div class="testimony-card">
+
+                      <!-- Purple glow blob behind card -->
+                      <div class="card-glow"></div>
+
+                      <!-- Card body -->
+                      <div class="card-inner">
+
+                        <!-- Large decorative quote -->
+                        <div class="big-quote display text-primary/10 select-none leading-none">"</div>
+
+                        <!-- Quote -->
+                        <p class="quote-text">"{{ t.quote }}"</p>
+
+                        <!-- Person -->
+                        <div class="person-row">
+                          @if (t.photoUrl) {
+                            <img [src]="t.photoUrl" [alt]="t.name" class="avatar-img" />
+                          } @else {
+                            <div class="avatar-fallback">
+                              <span class="material-symbols-outlined text-primary text-lg">person</span>
+                            </div>
+                          }
+                          <div class="person-info">
+                            <p class="person-name">{{ t.name }}</p>
+                            <p class="person-role">{{ t.role }}</p>
+                          </div>
+                          <!-- Bold badge -->
+                          <div class="ml-auto shrink-0">
+                            <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                              <span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings:'FILL' 1">auto_awesome</span>
+                            </div>
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+                  }
                 }
               </div>
-            }
+
+            </div>
           </div>
         </section>
       }
@@ -507,9 +539,11 @@
     </div>
   </div>
 
-  <!--HERO VIDEO MODAL
+  <!-- ══════════════════════════════════
+       HERO VIDEO MODAL
        YouTube → iframe with controls
-       File → native video tag-->
+       File → native video tag
+  ══════════════════════════════════ -->
   @if (showHeroModal()) {
     <div class="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-base-100/95 backdrop-blur-md"
          (click)="closeHeroModal()">

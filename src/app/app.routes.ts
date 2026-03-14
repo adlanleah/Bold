@@ -11,34 +11,43 @@ import { Give } from './CoreComps/give/give';
 import { authGuard } from './Guards/auth-guard-guard';
 
 export const routes: Routes = [
-     { path: '', 
-    component: Landing
-    },
-    { path: 'about', 
-        component: About
-    },
-    { path: 'join', 
-        component: Join
-    },
-    { path: 'admin', 
-        component: Dashboard,
-        canActivate:[authGuard]
-    },
-    { path: 'login', 
-        component: Login
-    },
-    { path: 'wear', 
-        component: Wear
-    },
-    { path: 'worship', 
-        component: Worship
-    },
-    { path: 'events', 
-        component: Gatherings
-    },
-    { path: 'give', 
-        component: Give
-    },
-    { path: '**',
-        redirectTo: '' },
+  {
+    path: '',
+    loadComponent: () => import('./CoreComps/landing/landing').then(m => m.Landing)
+  },
+  {
+    path: 'about',
+    loadComponent: () => import('./CoreComps/about/about').then(m => m.About)
+  },
+  {
+    path: 'join',
+    loadComponent: () => import('./CoreComps/join/join').then(m => m.Join)
+  },
+  {
+    path: 'worship',
+    loadComponent: () => import('./CoreComps/worship/worship').then(m => m.Worship)
+  },
+  {
+    path: 'wear',
+    loadComponent: () => import('./CoreComps/wear/wear').then(m => m.Wear)
+  },
+  {
+    path: 'events',
+    loadComponent: () => import('./CoreComps/gatherings/gatherings').then(m => m.Gatherings)
+  },
+  {
+    path: 'give',
+    loadComponent: () => import('./CoreComps/give/give').then(m => m.Give)
+  },
+  {
+    path: 'login',
+    loadComponent: () => import('./Admin/login/login').then(m => m.Login)
+  },
+  {
+    path: 'admin',
+    loadComponent: () => import('./Admin/dashboard/dashboard').then(m => m.Dashboard),
+    canActivate: [authGuard]
+  },
+  { path: '**', redirectTo: '' }
 ];
+
